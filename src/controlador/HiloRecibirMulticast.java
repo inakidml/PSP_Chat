@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modelo;
+package controlador;
 
+import modelo.Sala;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -64,7 +65,6 @@ public class HiloRecibirMulticast extends Thread {
                 msj = new String(recibido.getData());
                 procesarPaquete(msj);
                 ServPresent = true;
-                System.out.println(ServPresent);
             } catch (IOException ex) {
                 Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -85,12 +85,13 @@ public class HiloRecibirMulticast extends Thread {
     public static boolean isServPresent() {
         if (h == null) {
             arrancarHilo();
+            try {
+                sleep(2100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        try {
-            sleep(2100);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         return ServPresent;
 
     }

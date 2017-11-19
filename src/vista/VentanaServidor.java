@@ -5,6 +5,10 @@
  */
 package vista;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import modelo.Servidor;
 
 /**
@@ -12,12 +16,24 @@ import modelo.Servidor;
  * @author 9fdam02
  */
 public class VentanaServidor extends javax.swing.JFrame {
-private Servidor servidor;
+
+    private Servidor servidor;
+
     /**
      * Creates new form VentanaServidor
      */
     public VentanaServidor() {
         initComponents();
+    }
+
+    public void escribirTextArea(String s) {
+        String cadena = jTextArea1.getText();
+        if (!cadena.equals("")) {
+            cadena += "\n" + s;
+        } else {
+            cadena = s;
+        }
+        jTextArea1.setText(cadena);
     }
 
     /**
@@ -130,6 +146,11 @@ private Servidor servidor;
         jButton2.setText("Salir");
 
         jButton3.setText("Conectar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Tema");
 
@@ -189,6 +210,22 @@ private Servidor servidor;
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (!jTextField1.getText().equals("")) {
+            InetAddress ip = null;
+            try {
+                ip = InetAddress.getLocalHost();
+                System.out.println(ip);
+
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(VentanaServidor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            servidor = new Servidor(ip, jTextField1.getText(), this);
+        }
+
+
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments

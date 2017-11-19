@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modelo.HiloRecibirMulticast;
+import controlador.HiloRecibirMulticast;
 import modelo.Servidor;
-import modelo.ServidorMulticast;
+import controlador.ServidorMulticast;
 
 /**
  *
@@ -27,6 +27,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private VentanaCliente vc;
     private VentanaServidor vs;
     private List<VentanaCliente> vClientes;
+    private List<VentanaServidor> vServidores;
     private Servidor s;
     ServidorMulticast servDifusion;
 
@@ -35,6 +36,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
      */
     public VentanaPrincipal() {
         initComponents();
+        vClientes = new ArrayList<>();
+        vServidores = new ArrayList<>();
         this.setLocationRelativeTo(null);
         escribirTextArea("Buscando servidor de difusion");        
         if (!HiloRecibirMulticast.isServPresent()) {
@@ -187,13 +190,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (vs == null) {
-            s = new Servidor();
-            vClientes = s.getvClientes();
             vs = new VentanaServidor();
             vs.setServidor(s);
+            vServidores.add(vs);
             vs.setVisible(true);
-            //jButton1.setEnabled(false);
-            //jButton2.setEnabled(true);
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
