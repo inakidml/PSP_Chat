@@ -213,15 +213,8 @@ public class VentanaServidor extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (!jTextField1.getText().equals("")) {
-            InetAddress ip = null;
-            try {
-                ip = InetAddress.getLocalHost();
-                System.out.println(ip);
-
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(VentanaServidor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            servidor = new Servidor(ip, jTextField1.getText(), this);
+            servidor = new Servidor(jTextField1.getText(), this);
+            jTextField1.setText("");
         }
 
 

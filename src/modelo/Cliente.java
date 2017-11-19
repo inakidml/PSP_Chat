@@ -5,23 +5,29 @@
  */
 package modelo;
 
+import controlador.HiloRecibirMulticast;
 import java.net.Socket;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import vista.VentanaCliente;
 
 /**
  *
  * @author 9fdam02
  */
-public class Cliente extends Thread{
+public class Cliente extends Thread {
+
     private Servidor s;
     String nick;
     boolean fin = false;
     VentanaCliente v;
- 
+
     Socket socket;
-    
+
     public Cliente(String nick, VentanaCliente v) {
         this.nick = nick;
+        this.v = v;
         this.start();
     }
 
@@ -30,16 +36,31 @@ public class Cliente extends Thread{
         v.escribirTextArea(String.format("Hola %s.", nick));
         //TODO decidir servidor
         v.escribirTextArea("Esperando listado servidores...");
+        List<Sala> salas = null;
         
+        do {
+            salas = HiloRecibirMulticast.getServidores();
+            System.out.println("salas: " + salas);
+            try {
+                sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } while (salas == null);
+        int cont = 1;
+        for (Sala sala : salas) {
+            v.escribirTextArea(cont + ": " + sala.getTema());
+        }
+        //TODO seleccionar sala
         //TODO escuchar mensajes
         while (!fin) {
-            
+
         }
     }
     
-    public void mandarMensaje(String msj){
-        if (socket!=null) {
-            
+    public void mandarMensaje(String msj) {
+        if (socket != null) {
+
         }
     }
 }

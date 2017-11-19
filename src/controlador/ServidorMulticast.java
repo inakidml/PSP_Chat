@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modelo.Servidor;
 
 /**
  *
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class ServidorMulticast extends Thread {
 
-    private List<String> servidores;
+    private static List<String> servidores;
     MulticastSocket ms;
     int puerto;
     InetAddress grupo;
@@ -51,10 +52,10 @@ public class ServidorMulticast extends Thread {
     }
 
     private void difusionServidores() {
-        
+
         while (!fin) {
             String msj = crearMensaje();
-            dp = new DatagramPacket(msj.getBytes(),msj.length(),grupo, puerto);
+            dp = new DatagramPacket(msj.getBytes(), msj.length(), grupo, puerto);
             try {
                 ms.send(dp);
             } catch (IOException ex) {
@@ -66,21 +67,29 @@ public class ServidorMulticast extends Thread {
                 System.out.println("Interrupcion con el sleep del hilo difusión");;
             }
         }
-        
+
     }
 
-    private String crearMensaje(){
+    private String crearMensaje() {
         String msj = "";
         for (String servidor : servidores) {
-            msj += ","+servidor;
+            if (!msj.equals("")) {
+                msj += "," + servidor;
+            } else {
+                msj = servidor;
+            }
         }
-    return msj;
+        return msj;
     }
-    public void anadirServidor(String s) {
-        servidores.add(s);
+
+    public static void addServidor(Servidor s) {
+        String ip = s.getIp().getHostAddress();
+        String serv = ip + ":" + s.getPuerto() + ":" + s.getTema();
+        servidores.add(serv);
     }
-    public void terminarServidor(){
-    fin = true;
+
+    public void terminarServidor() {
+        fin = true;
     }
 
 }

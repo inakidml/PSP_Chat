@@ -11,9 +11,11 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modelo.Servidor;
 import vista.VentanaPrincipal;
 
 /**
@@ -57,12 +59,13 @@ public class HiloRecibirMulticast extends Thread {
         byte[] buf = new byte[1024];
         String msj;
         while (!fin) {
-
             DatagramPacket recibido = new DatagramPacket(buf, buf.length);
 
             try {
                 ms.receive(recibido);
+
                 msj = new String(recibido.getData());
+
                 procesarPaquete(msj);
                 ServPresent = true;
             } catch (IOException ex) {
@@ -109,6 +112,7 @@ public class HiloRecibirMulticast extends Thread {
 
     private void procesarPaquete(String s) {
         if (!s.trim().equals("")) {
+        servidores = new ArrayList<>();
             String servidor;
             String puerto;
             String[] ss = s.split(",");//separamos los servidores
@@ -116,6 +120,7 @@ public class HiloRecibirMulticast extends Thread {
                 String[] datos = serv.split(":"); //separamos ip:puerto:tema
                 try {
                     Sala sala = new Sala(InetAddress.getByName(datos[0]), Integer.parseInt(datos[1]), datos[2]);
+                    servidores.add(sala);
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);
                 }

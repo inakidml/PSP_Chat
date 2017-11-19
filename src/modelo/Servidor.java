@@ -7,9 +7,16 @@ package modelo;
 
 import controlador.HiloEscuchaServ;
 import controlador.HiloRecibirMulticast;
+import controlador.ServidorMulticast;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import vista.VentanaCliente;
 import vista.VentanaServidor;
 
@@ -27,13 +34,34 @@ public class Servidor {
     HiloEscuchaServ h;
     VentanaServidor v;
 
-    public Servidor(InetAddress ip, String tema, VentanaServidor v) {
+    public Servidor(String tema, VentanaServidor v) throws SocketException {
         clientes = new ArrayList<>();
-        this.ip = ip;
+        try {
+            this.ip = InetAddress.getLocalHost();
+
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.puerto = getPuerto();
         this.tema = tema;
-        h = new HiloEscuchaServ(this);
         this.v = v;
+        v.escribirTextArea("Recuperando ip servidor: " + ip);
+
+        //TODO conseguir ip real 
+//        Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
+//        for (; n.hasMoreElements();) {
+//            NetworkInterface e = n.nextElement();
+//            v.escribirTextArea("Interface: " + e.getName());
+//            Enumeration<InetAddress> a = e.getInetAddresses();
+//            for (; a.hasMoreElements();) {
+//                InetAddress addr = a.nextElement();
+//                v.escribirTextArea("  " + addr.getHostAddress());
+//            }
+//        }
+
+        v.escribirTextArea("Servidor creado.");
+        ServidorMulticast.addServidor(this);
+        v.escribirTextArea("Servidor añadido a lista de difusión.");
     }
 
     public void addCliente(Cliente c) {
@@ -71,6 +99,20 @@ public class Servidor {
      */
     public void setClientes(List<Cliente> clientes) {
         this.clientes = clientes;
+    }
+
+    /**
+     * @return the ip
+     */
+    public InetAddress getIp() {
+        return ip;
+    }
+
+    /**
+     * @return the tema
+     */
+    public String getTema() {
+        return tema;
     }
 
 }

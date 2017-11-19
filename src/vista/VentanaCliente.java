@@ -140,7 +140,8 @@ public class VentanaCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (!jTextField1.equals("") && c == null) {
+       
+        if (!jTextField1.getText().equals("") && c == null) {
             c = new Cliente(jTextField1.getText(), this);
         }
     }//GEN-LAST:event_jButton1ActionPerformed

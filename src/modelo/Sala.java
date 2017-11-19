@@ -16,10 +16,10 @@ public class Sala {
     private int puerto;
     private String tema;
 
-    public Sala(InetAddress ip, int puerto, String tema) {
+    public Sala(InetAddress ip, int pueto, String tea) {
         this.ip = ip;
-        this.puerto = puerto;
-        this.tema = tema;
+        this.puerto = pueto;
+        this.tema = tea;
     }
 
     /**
@@ -30,14 +30,14 @@ public class Sala {
     }
 
     /**
-     * @return the puerto
+     * @return the pueto
      */
     public int getPuerto() {
         return puerto;
     }
 
     /**
-     * @return the tema
+     * @return the tea
      */
     public String getTema() {
         return tema;
