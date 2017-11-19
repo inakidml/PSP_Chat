@@ -5,33 +5,72 @@
  */
 package modelo;
 
+import controlador.HiloEscuchaServ;
+import controlador.HiloRecibirMulticast;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import vista.VentanaCliente;
+import vista.VentanaServidor;
 
 /**
  *
  * @author 9fdam02
  */
 public class Servidor {
-    private List<VentanaCliente> vClientes;
 
-    /**
-     * @return the vClientes
-     */
-    public List<VentanaCliente> getvClientes() {
-        return vClientes;
+    private List<Cliente> clientes;
+    private InetAddress ip;
+    private int puerto = -1;
+    private String tema;
+    boolean fin = false;
+    HiloEscuchaServ h;
+    VentanaServidor v;
+
+    public Servidor(InetAddress ip, String tema, VentanaServidor v) {
+        clientes = new ArrayList<>();
+        this.ip = ip;
+        this.puerto = getPuerto();
+        this.tema = tema;
+        h = new HiloEscuchaServ(this);
+        this.v = v;
+    }
+
+    public void addCliente(Cliente c) {
+        getClientes().add(c);
     }
 
     /**
-     * @param vClientes the vClientes to set
+     * @return the clientes
      */
-    public void setvClientes(List<VentanaCliente> vClientes) {
-        this.vClientes = vClientes;
+    public List<Cliente> getClientes() {
+        return clientes;
     }
 
-    public Servidor() {    
-        vClientes = new ArrayList<>();
+    public int getPuerto() {
+        if (puerto != -1) {
+            return puerto;
+        } else {
+            puerto = -1;
+            List<Sala> servidores = HiloRecibirMulticast.getServidores();
+            if (servidores != null) {
+                for (Sala servidor : servidores) {
+                    if (servidor.getPuerto() > puerto) {
+                        puerto = servidor.getPuerto();
+                    }
+                }
+                return puerto + 1;
+            } else {
+                return 8001;
+            }
+        }
     }
-    
+
+    /**
+     * @param clientes the clientes to set
+     */
+    public void setClientes(List<Cliente> clientes) {
+        this.clientes = clientes;
+    }
+
 }
