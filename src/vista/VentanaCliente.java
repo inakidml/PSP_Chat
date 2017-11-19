@@ -5,17 +5,29 @@
  */
 package vista;
 
+import modelo.Cliente;
+
 /**
  *
  * @author 9fdam02
  */
 public class VentanaCliente extends javax.swing.JFrame {
-
+    private Cliente c;
     /**
      * Creates new form VentanaCliente
      */
     public VentanaCliente() {
         initComponents();
+    }
+
+    public void escribirTextArea(String s) {
+        String cadena = jTextArea1.getText();
+        if (!cadena.equals("")) {
+            cadena += "\n" + s;
+        } else {
+            cadena = s;
+        }
+        jTextArea1.setText(cadena);
     }
 
     /**
@@ -67,6 +79,11 @@ public class VentanaCliente extends javax.swing.JFrame {
         jLabel2.setText("Nick:");
 
         jButton1.setText("Conectar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -83,12 +100,12 @@ public class VentanaCliente extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                        .addComponent(jTextField1)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1)
                         .addGap(18, 18, 18)
@@ -121,6 +138,12 @@ public class VentanaCliente extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (!jTextField1.equals("") && c == null) {
+            c = new Cliente(jTextField1.getText(), this);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
