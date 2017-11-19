@@ -34,7 +34,7 @@ public class Servidor {
     HiloEscuchaServ h;
     VentanaServidor v;
 
-    public Servidor(String tema, VentanaServidor v) throws SocketException {
+    public Servidor(String tema, VentanaServidor v) {
         clientes = new ArrayList<>();
         try {
             this.ip = InetAddress.getLocalHost();
