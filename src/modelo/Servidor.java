@@ -34,7 +34,7 @@ public class Servidor {
     HiloEscuchaServ h;
     VentanaServidor v;
 
-    public Servidor(String tema, VentanaServidor v) {
+    public Servidor(String tema, VentanaServidor v) throws SocketException {
         clientes = new ArrayList<>();
         try {
             this.ip = InetAddress.getLocalHost();
@@ -48,16 +48,16 @@ public class Servidor {
         v.escribirTextArea("Recuperando ip servidor: " + ip);
 
         //TODO conseguir ip real 
-//        Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
-//        for (; n.hasMoreElements();) {
-//            NetworkInterface e = n.nextElement();
-//            v.escribirTextArea("Interface: " + e.getName());
-//            Enumeration<InetAddress> a = e.getInetAddresses();
-//            for (; a.hasMoreElements();) {
-//                InetAddress addr = a.nextElement();
-//                v.escribirTextArea("  " + addr.getHostAddress());
-//            }
-//        }
+        Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
+        for (; n.hasMoreElements();) {
+            NetworkInterface e = n.nextElement();
+            v.escribirTextArea("Interface: " + e.getName());
+            Enumeration<InetAddress> a = e.getInetAddresses();
+            for (; a.hasMoreElements();) {
+                InetAddress addr = a.nextElement();
+                v.escribirTextArea("  " + addr.getHostAddress());
+            }
+        }
 
         v.escribirTextArea("Servidor creado.");
         ServidorMulticast.addServidor(this);

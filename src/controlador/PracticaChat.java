@@ -20,7 +20,7 @@ public class PracticaChat {
      */
     public static void main(String[] args) {
         //Preferencia por ipv4 si no da error en macos con ip multicast
-           System.setProperty("java.net.preferIPv4Stack", "true");
+        System.setProperty("java.net.preferIPv4Stack", "true");
         if (v == null) {
             v = new VentanaPrincipal();
             v.setVisible(true);
