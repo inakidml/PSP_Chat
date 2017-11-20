@@ -12,7 +12,10 @@ import modelo.Cliente;
  * @author 9fdam02
  */
 public class VentanaCliente extends javax.swing.JFrame {
+
     private Cliente c;
+    private boolean conectado = false;
+
     /**
      * Creates new form VentanaCliente
      */
@@ -90,6 +93,11 @@ public class VentanaCliente extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton2.setText("Enviar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Salir");
 
@@ -140,11 +148,20 @@ public class VentanaCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
+
         if (!jTextField1.getText().equals("") && c == null) {
             c = new Cliente(jTextField1.getText(), this);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (conectado) {
+            c.mandarMensaje(jTextField2.getText());
+        } else {
+
+            c.seleccionarSala(jTextField2.getText());
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

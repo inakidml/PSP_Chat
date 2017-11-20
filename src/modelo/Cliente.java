@@ -37,7 +37,7 @@ public class Cliente extends Thread {
         //TODO decidir servidor
         v.escribirTextArea("Esperando listado servidores...");
         List<Sala> salas = null;
-        
+
         do {
             salas = HiloRecibirMulticast.getServidores();
             System.out.println("salas: " + salas);
@@ -57,10 +57,14 @@ public class Cliente extends Thread {
 
         }
     }
-    
+
     public void mandarMensaje(String msj) {
         if (socket != null) {
 
         }
+    }
+
+    public void seleccionarSala(String s) {
+        //TODO función que llama la tecla enviar de la vista
     }
 }
