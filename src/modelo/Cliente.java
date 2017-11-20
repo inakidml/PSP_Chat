@@ -22,6 +22,7 @@ public class Cliente extends Thread {
     String nick;
     boolean fin = false;
     VentanaCliente v;
+    int servSeleccionado = -1;
 
     Socket socket;
 
@@ -50,11 +51,27 @@ public class Cliente extends Thread {
         int cont = 1;
         for (Sala sala : salas) {
             v.escribirTextArea(cont + ": " + sala.getTema());
+            cont++;
         }
-        //TODO seleccionar sala
-        //TODO escuchar mensajes
+        v.escribirTextArea("Seleccione la sala: ");
+        while (servSeleccionado <= 0 || servSeleccionado > salas.size()) {
+            try {
+                sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        //TODO coenctar y escuchar mensajes, cambiar variable conectado de vcliente
         while (!fin) {
-
+            v.escribirTextArea("bucle");
+            v.escribirTextArea("" + servSeleccionado);
+            Sala salaSelec = salas.get(servSeleccionado-1);
+            v.escribirTextArea(salaSelec.getIp() + ": " + salaSelec.getPuerto() + salaSelec.getTema());
+            try {
+                sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -65,6 +82,7 @@ public class Cliente extends Thread {
     }
 
     public void seleccionarSala(String s) {
-        //TODO función que llama la tecla enviar de la vista
+        int num = Integer.parseInt(s);
+        servSeleccionado = num;
     }
 }

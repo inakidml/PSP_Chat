@@ -189,13 +189,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jTextArea1.setText(cadena);
     }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (vs == null) {
+
             vs = new VentanaServidor();
             vs.setServidor(s);
             vServidores.add(vs);
             vs.setVisible(true);
 
-        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

@@ -30,6 +30,7 @@ public class HiloRecibirMulticast extends Thread {
     private static HiloRecibirMulticast h = null;
     private static boolean fin = false;
     private static List<Sala> servidores;
+    private static int ultimoServ;
 
     public HiloRecibirMulticast() {
 
@@ -119,7 +120,8 @@ public class HiloRecibirMulticast extends Thread {
             for (String serv : ss) {
                 String[] datos = serv.split(":"); //separamos ip:puerto:tema
                 try {
-                    Sala sala = new Sala(InetAddress.getByName(datos[0]), Integer.parseInt(datos[1]), datos[2]);
+                    ultimoServ ++;
+                    Sala sala = new Sala(ultimoServ, InetAddress.getByName(datos[0]), Integer.parseInt(datos[1]), datos[2]);
                     servidores.add(sala);
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);

@@ -211,6 +211,7 @@ public class VentanaServidor extends javax.swing.JFrame {
         if (!jTextField1.getText().equals("")) {
             servidor = new Servidor(jTextField1.getText(), this);
             jTextField1.setText("");
+            jButton3.setEnabled(false);
         }
 
 

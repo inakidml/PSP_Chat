@@ -12,11 +12,14 @@ import java.net.InetAddress;
  * @author inaki
  */
 public class Sala {
+
+    private int id;
     private InetAddress ip;
     private int puerto;
     private String tema;
 
-    public Sala(InetAddress ip, int pueto, String tea) {
+    public Sala(int id, InetAddress ip, int pueto, String tea) {
+        this.id = id;
         this.ip = ip;
         this.puerto = pueto;
         this.tema = tea;
@@ -42,5 +45,19 @@ public class Sala {
     public String getTema() {
         return tema;
     }
-    
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

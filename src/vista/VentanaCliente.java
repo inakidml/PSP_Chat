@@ -151,6 +151,8 @@ public class VentanaCliente extends javax.swing.JFrame {
 
         if (!jTextField1.getText().equals("") && c == null) {
             c = new Cliente(jTextField1.getText(), this);
+            jTextField1.setText("");
+            jButton1.setEnabled(false);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
