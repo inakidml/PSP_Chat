@@ -5,16 +5,20 @@
  */
 package modelo;
 
-import controlador.HiloEscuchaServ;
 import controlador.HiloRecibirMulticast;
 import controlador.ServidorMulticast;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import vista.VentanaCliente;
@@ -24,18 +28,21 @@ import vista.VentanaServidor;
  *
  * @author 9fdam02
  */
-public class Servidor {
+public class Servidor extends Thread {
 
-    private List<Cliente> clientes;
     private InetAddress ip;
     private int puerto = -1;
     private String tema;
     boolean fin = false;
-    HiloEscuchaServ h;
+
     VentanaServidor v;
+    List<HiloServerSocket> hilosRx;
+    Map<String, HiloServerSocket> mapHilos; // conexiones de clientes ordenadas por nick
 
     public Servidor(String tema, VentanaServidor v) {
-        clientes = new ArrayList<>();
+
+        hilosRx = new ArrayList<>();
+        mapHilos = new HashMap();
         try {
             this.ip = InetAddress.getLocalHost();
 
@@ -45,6 +52,11 @@ public class Servidor {
         this.puerto = getPuerto();
         this.tema = tema;
         this.v = v;
+        this.start();
+    }
+
+    @Override
+    public void run() {
         v.escribirTextArea("Recuperando ip servidor: " + ip);
 
         //TODO conseguir ip real 
@@ -58,21 +70,32 @@ public class Servidor {
 //                v.escribirTextArea("  " + addr.getHostAddress());
 //            }
 //        }
-
         v.escribirTextArea("Servidor creado.");
         ServidorMulticast.addServidor(this);
         v.escribirTextArea("Servidor añadido a lista de difusión.");
+        v.escribirTextArea("Creando ServerSocket");
+        ServerSocket sc = null;
+        try {
+            sc = new ServerSocket(puerto);
+        } catch (IOException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        v.escribirTextArea("Esperando conexión");
+        while (!fin) {
+            Socket socket = null;
+            try {
+                socket = sc.accept();
+            } catch (IOException ex) {
+                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            HiloServerSocket h = new HiloServerSocket(socket, this);
+            hilosRx.add(h);
+            h.start();
+        }
     }
 
-    public void addCliente(Cliente c) {
-        getClientes().add(c);
-    }
-
-    /**
-     * @return the clientes
-     */
-    public List<Cliente> getClientes() {
-        return clientes;
+    public void addNombreCliente(String s, HiloServerSocket h) {
+        mapHilos.put(s, h);
     }
 
     public int getPuerto() {
@@ -92,13 +115,6 @@ public class Servidor {
                 return 8001;
             }
         }
-    }
-
-    /**
-     * @param clientes the clientes to set
-     */
-    public void setClientes(List<Cliente> clientes) {
-        this.clientes = clientes;
     }
 
     /**
