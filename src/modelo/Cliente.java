@@ -30,6 +30,7 @@ public class Cliente extends Thread {
     int servSeleccionado = -1;
 
     Socket socket;
+    PrintWriter out = null;
 
     public Cliente(String nick, VentanaCliente v) {
         this.nick = nick;
@@ -82,18 +83,19 @@ public class Cliente extends Thread {
             String texto = null;
             texto = br.readLine();
             v.escribirTextArea(texto);//Hola cliente            
-            mandarMensaje(nick);
+            mandarMensaje(nick + "\n");
+            mandarMensaje("otro mesaje");
+            mandarMensaje("Último mensaje");
             boolean fin = false;
 
             while (!fin) {
-                br = new BufferedReader(new InputStreamReader(System.in));
-
+                //recibiendo mensajes
                 texto = br.readLine();
-
                 v.escribirTextArea(texto);
             }
-            br.close();
 
+            br.close();
+            out.close();
             socket.close();
             //////////////////////////////////
 
@@ -104,14 +106,13 @@ public class Cliente extends Thread {
 
     public void mandarMensaje(String msj) {
         if (socket != null) {
-            PrintWriter out = null;
+
             try {
                 out = new PrintWriter(socket.getOutputStream(), true);
                 out.println(msj);
             } catch (IOException ex) {
                 Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                out.close();
+
             }
         }
     }

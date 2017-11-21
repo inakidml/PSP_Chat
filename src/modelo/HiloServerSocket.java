@@ -39,14 +39,17 @@ class HiloServerSocket extends Thread {
             InputStreamReader datosCliente = new InputStreamReader(socket.getInputStream());
             BufferedReader br = new BufferedReader(datosCliente);
 
-            nick = br.readLine();           
+            nick = br.readLine();
             s.v.escribirTextArea("Bienvenido: " + nick);
             s.addNombreCliente(nick, this);
             String texto;
             while (!fin) {
-                s.v.escribirTextArea("vuelta");
+                s.v.escribirTextArea("" + socket.getInetAddress());
                 texto = br.readLine();
                 s.v.escribirTextArea(texto);
+                //TODO enviar mensajes a todos
+//   out.println("un mensaje de vuelta");
+
             }
             br.close();
             out.close();
