@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modelo.Servidor;
 
 /**
  *
@@ -32,7 +33,7 @@ class HiloServerSocket extends Thread {
     public void run() {
         PrintWriter out = null;
         try {
-            s.v.escribirTextArea("cliente conectado");
+            s.getV().escribirTextArea("cliente conectado");
             boolean fin = false;
             out = new PrintWriter(socket.getOutputStream(), true);
             out.println("Hola cliente, ya estas conectado");
@@ -40,13 +41,14 @@ class HiloServerSocket extends Thread {
             BufferedReader br = new BufferedReader(datosCliente);
 
             nick = br.readLine();
-            s.v.escribirTextArea("Bienvenido: " + nick);
+            s.getV().escribirTextArea("Bienvenido: " + nick);
+            
             s.addNombreCliente(nick, this);
             String texto;
             while (!fin) {
-                s.v.escribirTextArea("" + socket.getInetAddress());
                 texto = br.readLine();
-                s.v.escribirTextArea(texto);
+                s.getV().escribirTextArea(nick + ": " + socket.getInetAddress());              
+                s.getV().escribirTextArea("mensaje: " + texto);
                 //TODO enviar mensajes a todos
 //   out.println("un mensaje de vuelta");
 

@@ -13,6 +13,20 @@ import modelo.Cliente;
  */
 public class VentanaCliente extends javax.swing.JFrame {
 
+    /**
+     * @return the conectado
+     */
+    public boolean isConectado() {
+        return conectado;
+    }
+
+    /**
+     * @param conectado the conectado to set
+     */
+    public void setConectado(boolean conectado) {
+        this.conectado = conectado;
+    }
+
     private Cliente c;
     private boolean conectado = false;
 
@@ -157,11 +171,13 @@ public class VentanaCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (conectado) {
+        if (isConectado()) {
             c.mandarMensaje(jTextField2.getText());
+            jTextField2.setText("");
         } else {
 
             c.seleccionarSala(jTextField2.getText());
+            jTextField2.setText("");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

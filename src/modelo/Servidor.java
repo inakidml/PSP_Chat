@@ -30,14 +30,21 @@ import vista.VentanaServidor;
  */
 public class Servidor extends Thread {
 
+    /**
+     * @return the v
+     */
+    public VentanaServidor getV() {
+        return v;
+    }
+
     private InetAddress ip;
     private int puerto = -1;
     private String tema;
     boolean fin = false;
 
-    VentanaServidor v;
-    List<HiloServerSocket> hilosRx;
-    Map<String, HiloServerSocket> mapHilos; // conexiones de clientes ordenadas por nick
+    private VentanaServidor v;
+    private List<HiloServerSocket> hilosRx;
+    private Map<String, HiloServerSocket> mapHilos; // conexiones de clientes ordenadas por nick
 
     public Servidor(String tema, VentanaServidor v) {
 
@@ -57,7 +64,7 @@ public class Servidor extends Thread {
 
     @Override
     public void run() {
-        v.escribirTextArea("Recuperando ip servidor: " + ip);
+        getV().escribirTextArea("Recuperando ip servidor: " + ip);
 
         //TODO conseguir ip real 
 //        Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
@@ -70,17 +77,17 @@ public class Servidor extends Thread {
 //                v.escribirTextArea("  " + addr.getHostAddress());
 //            }
 //        }
-        v.escribirTextArea("Servidor creado.");
+        getV().escribirTextArea("Servidor creado.");
         ServidorMulticast.addServidor(this);
-        v.escribirTextArea("Servidor añadido a lista de difusión.");
-        v.escribirTextArea("Creando ServerSocket");
+        getV().escribirTextArea("Servidor añadido a lista de difusión.");
+        getV().escribirTextArea("Creando ServerSocket");
         ServerSocket sc = null;
         try {
             sc = new ServerSocket(puerto);
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
-        v.escribirTextArea("Esperando conexión");
+        getV().escribirTextArea("Esperando conexión");
         while (!fin) {
             Socket socket = null;
             try {
@@ -93,7 +100,6 @@ public class Servidor extends Thread {
             h.start();
         }
     }
-
     public void addNombreCliente(String s, HiloServerSocket h) {
         mapHilos.put(s, h);
     }

@@ -48,10 +48,8 @@ public class Cliente extends Thread {
             List<Sala> salas = null;
             do {
                 salas = HiloRecibirMulticast.getServidores();
-                System.out.println("salas: " + salas);
-
                 try {
-                    sleep(2000);
+                    sleep(500);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -82,10 +80,10 @@ public class Cliente extends Thread {
             BufferedReader br = new BufferedReader(datosCliente);
             String texto = null;
             texto = br.readLine();
-            v.escribirTextArea(texto);//Hola cliente            
-            mandarMensaje(nick + "\n");
-            mandarMensaje("otro mesaje");
-            mandarMensaje("Último mensaje");
+            v.escribirTextArea(texto);//Hola cliente 
+            v.setConectado(true);
+            mandarMensaje(nick);
+
             boolean fin = false;
 
             while (!fin) {
@@ -117,7 +115,7 @@ public class Cliente extends Thread {
         }
     }
 
-    public void seleccionarSala(String s) {
+    public void seleccionarSala(String s) {//se llama desde la ventana, para seleccionar la sala
         int num = Integer.parseInt(s);
         servSeleccionado = num;
     }
