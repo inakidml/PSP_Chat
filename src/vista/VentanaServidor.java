@@ -5,6 +5,16 @@
  */
 package vista;
 
+import controlador.HiloRecibirMulticast;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import modelo.HiloServerSocket;
 import modelo.Servidor;
 
 /**
@@ -14,12 +24,14 @@ import modelo.Servidor;
 public class VentanaServidor extends javax.swing.JFrame {
 
     private Servidor servidor;
+    private DefaultTableModel tableModel;
 
     /**
      * Creates new form VentanaServidor
      */
     public VentanaServidor() {
         initComponents();
+
     }
 
     public void escribirTextArea(String s) {
@@ -30,6 +42,91 @@ public class VentanaServidor extends javax.swing.JFrame {
             cadena = s;
         }
         jTextArea1.setText(cadena);
+    }
+
+    public void rellenarJTable() {
+        MouseListener tableMouseListener;
+//        tableMouseListener = new MouseAdapter() {
+
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                int row = jTable1.rowAtPoint(e.getPoint());//get mouse-selected row
+//                int col = jTable1.columnAtPoint(e.getPoint());//get mouse-selected col
+//                TipoIncidencia tI = new TipoIncidencia();
+//                String tipo = (String) tableModel.getValueAt(row, 0);
+//                int idElegido = 0;
+//                for (TipoIncidencia tipoIncidencia : tiposIncidencias) {
+//                    if (tipo.equals(tipoIncidencia.getTipo())) {
+//                        idElegido = tipoIncidencia.getId();
+//                    }
+//                }
+//                tI.setId(idElegido);
+//                tI = tiposIncidencias.get(tiposIncidencias.indexOf(tI)); //conseguimos el objeto
+//                Incidencia inc;
+//                inc = new Incidencia(tI, j, (String) tableModel.getValueAt(row, 1));
+//                inc = listaIncidencias.get(listaIncidencias.indexOf(inc));
+//                jTextField2.setText("" + inc.getTipoIncidencia().getTipo());
+//                jTextField3.setText(inc.getFecha());
+//                jTextField4.setText(inc.getTipoIncidencia().getSancion());
+//
+//                incBorrar = inc;
+//            }
+//        };
+        List<HiloServerSocket> hilosRx = servidor.getHilosRx();
+
+        Object[][] data = {};
+        data = new Object[hilosRx.size()][2];
+        if (hilosRx != null) {
+            int i = 0;
+            for (HiloServerSocket hilo : hilosRx) {
+                String nick = hilo.getNick();
+                data[i][0] = nick;
+                String ip = hilo.getIpCliente().getHostAddress();
+                data[i][1] = ip;
+                i++;
+            }
+
+        }
+        String[] colName = {"Nick", "ip"};
+
+        jTable1 = new javax.swing.JTable();
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(data, colName) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        });
+//jTable1.addMouseListener(tableMouseListener);
+
+        tableModel = (DefaultTableModel) jTable1.getModel();
+
+        jScrollPane1.setViewportView(jTable1);
+
+        jTable1 = new JTable(data, colName);
+        jScrollPane1 = new JScrollPane(jTable1);
+
+    }
+
+    public void refrescarJTable() {
+        tableModel.setRowCount(0);
+
+        List<HiloServerSocket> hilosRx = servidor.getHilosRx();
+        Object[] data = {};
+        data = new Object[2];
+        if (hilosRx != null) {
+            for (HiloServerSocket hilo : hilosRx) {
+                String nick = hilo.getNick();
+                data[0] = nick;
+                String ip = hilo.getIpCliente().getHostAddress();
+                data[1] = ip;
+                tableModel.addRow(data);
+            }
+        }
+        jTable1.setModel(tableModel);
+        tableModel.fireTableDataChanged();
     }
 
     /**
@@ -212,6 +309,7 @@ public class VentanaServidor extends javax.swing.JFrame {
             servidor = new Servidor(jTextField1.getText(), this);
             jTextField1.setText("");
             jButton3.setEnabled(false);
+            rellenarJTable();
         }
 
 
@@ -231,16 +329,24 @@ public class VentanaServidor extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VentanaServidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaServidor.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VentanaServidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaServidor.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VentanaServidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaServidor.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VentanaServidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaServidor.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 

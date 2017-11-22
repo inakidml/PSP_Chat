@@ -3,10 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Volumes/MacbookProHD/Users/inaki/GitHub/PSP_Chat/src/modelo/Cliente.java</file>
-            <file>file:/Volumes/MacbookProHD/Users/inaki/GitHub/PSP_Chat/src/modelo/HiloServerSocket.java</file>
-            <file>file:/Volumes/MacbookProHD/Users/inaki/GitHub/PSP_Chat/src/modelo/Servidor.java</file>
-            <file>file:/Volumes/MacbookProHD/Users/inaki/GitHub/PSP_Chat/src/vista/VentanaCliente.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/controlador/ServidorMulticast.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/vista/VentanaPrincipal.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/controlador/PracticaChat.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/modelo/HiloServerSocket.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/modelo/Servidor.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/controlador/HiloRecibirMulticast.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/modelo/Cliente.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/vista/VentanaServidor.java</file>
+            <file>file:/C:/Users/9fdam02/GitHub/PSP_Chat/src/vista/VentanaCliente.java</file>
         </group>
     </open-files>
 </project-private>

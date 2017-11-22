@@ -96,12 +96,12 @@ public class Servidor extends Thread {
                 Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
             }
             HiloServerSocket h = new HiloServerSocket(socket, this);
-            hilosRx.add(h);
+            getHilosRx().add(h);
             h.start();
         }
     }
     public void addNombreCliente(String s, HiloServerSocket h) {
-        mapHilos.put(s, h);
+        getMapHilos().put(s, h);
     }
 
     public int getPuerto() {
@@ -135,6 +135,20 @@ public class Servidor extends Thread {
      */
     public String getTema() {
         return tema;
+    }
+
+    /**
+     * @return the hilosRx
+     */
+    public List<HiloServerSocket> getHilosRx() {
+        return hilosRx;
+    }
+
+    /**
+     * @return the mapHilos
+     */
+    public Map<String, HiloServerSocket> getMapHilos() {
+        return mapHilos;
     }
 
 }

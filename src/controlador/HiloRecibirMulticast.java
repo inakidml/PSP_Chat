@@ -35,7 +35,7 @@ public class HiloRecibirMulticast extends Thread {
     public HiloRecibirMulticast() {
 
         try {
-            ms = new MulticastSocket(8000);
+            ms = new MulticastSocket(50000);
         } catch (IOException ex) {
             System.out.println("IOException en VPrincipal, buscando servidor difusión");;
         }

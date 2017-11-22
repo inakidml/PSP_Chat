@@ -23,7 +23,7 @@ import controlador.ServidorMulticast;
  * @author 9fdam02
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
-    
+
     private VentanaCliente vc;
     private VentanaServidor vs;
     private List<VentanaCliente> vClientes;
@@ -39,7 +39,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         vClientes = new ArrayList<>();
         vServidores = new ArrayList<>();
         this.setLocationRelativeTo(null);
-        escribirTextArea("Buscando servidor de difusion");        
+        escribirTextArea("Buscando servidor de difusion");
         if (!HiloRecibirMulticast.isServPresent()) {
             escribirTextArea("No enconrado");
             escribirTextArea("Arrancando servidor difusión");
@@ -47,7 +47,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             servDifusion.start();
         } else {
             escribirTextArea("Encontrado servidor de difusión");
-            
+            jButton1.setEnabled(false);
+
         }
     }
 
@@ -173,12 +174,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-   
+
     private boolean isServidorDif() {
-        
+
         return true;
     }
-    
+
     private void escribirTextArea(String s) {
         String cadena = jTextArea1.getText();
         if (!cadena.equals("")) {
@@ -190,15 +191,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-            vs = new VentanaServidor();
-            vs.setServidor(s);
-            vServidores.add(vs);
-            vs.setVisible(true);
+        vs = new VentanaServidor();
+        vs.setServidor(s);
+        vServidores.add(vs);
+        vs.setVisible(true);
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
+
         vc = new VentanaCliente();
         vClientes.add(vc);
         vc.setVisible(true);
@@ -206,7 +207,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        servDifusion.terminarServidor();
+        if (servDifusion != null) {
+            servDifusion.terminarServidor();
+        }
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 

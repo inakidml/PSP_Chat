@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +36,18 @@ public class ServidorMulticast extends Thread {
         servidores = new ArrayList<>();
         try {
             ms = new MulticastSocket();
+            
         } catch (IOException ex) {
             System.out.println("IOException al instanciar Multicast");;
         }
-        puerto = 8000;
+        puerto = 50000;
         try {
+//            try {
+//                ms.setNetworkInterface(NetworkInterface.getByInetAddress(
+//                        InetAddress.getByName("0.0.0.0")));
+//            } catch (SocketException ex) {
+//                Logger.getLogger(ServidorMulticast.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             grupo = InetAddress.getByName("224.0.1.1");
         } catch (UnknownHostException ex) {
             System.out.println("Direccion multicast no válida");;
