@@ -36,6 +36,7 @@ public class ServidorMulticast extends Thread {
         servidores = new ArrayList<>();
         try {
             ms = new MulticastSocket();
+            ms.setTimeToLive(16);
             
         } catch (IOException ex) {
             System.out.println("IOException al instanciar Multicast");;
