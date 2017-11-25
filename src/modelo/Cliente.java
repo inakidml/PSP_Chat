@@ -27,15 +27,16 @@ import vista.VentanaCliente;
 public class Cliente extends Thread {
 
     private Servidor s;
-    String nick;
-    boolean fin = false;
-    VentanaCliente v;
-    int servSeleccionado = -1;
-    InputStreamReader datosCliente = null;
-    Socket socket;
-    PrintWriter out = null;
+    private String nick;
+    private boolean fin = false;
+    private VentanaCliente v;
+    private int servSeleccionado = -1;
+    private InputStreamReader datosCliente = null;
+    private Socket socket;
+    private PrintWriter out = null;
 
     public Cliente(String nick, VentanaCliente v) {
+        //Constructor y arranca hilo
         this.nick = nick;
         this.v = v;
         this.start();
@@ -45,11 +46,12 @@ public class Cliente extends Thread {
     @Override
     public void run() {
         try {
+            //renombramos hilo para debug
             this.setName("HiloCLiente");
             v.escribirTextArea(String.format("Hola %s.", nick));
-            //TODO decidir servidor
             v.escribirTextArea("Esperando listado servidores...");
             List<Sala> salas = null;
+            //esperamos la lista de servidores, o 5 vueltas
             int contador = 0;
             do {
                 salas = HiloRecibirMulticast.getServidores();
@@ -62,10 +64,10 @@ public class Cliente extends Thread {
 
             } while (salas == null && contador < 5);
 
-            if (salas == null) {//no hay servidores cerca
+            if (salas == null) {//no lista de servidores
                 v.escribirTextArea("No se ha encontrado lista de servidores, pasamos a modo manual.");
                 conectarManual();
-            } else {
+            } else {//si hay lista
                 int cont = 1;
                 v.escribirTextArea("0: Conexión manual.");
                 for (Sala sala : salas) {
@@ -73,49 +75,53 @@ public class Cliente extends Thread {
                     cont++;
                 }
                 v.escribirTextArea("Seleccione la sala: ");
-                while (servSeleccionado < 0 || servSeleccionado > salas.size()) {
-
+                while (servSeleccionado < 0 || servSeleccionado > salas.size()) {//validamos dato, servSeleccionado se cambia con seleccionarSala() desde ventana
                     try {
-                        sleep(500);
+                        sleep(500);//Esperamos para que el usuario elija y no de vueltas como loco.
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
                 }
+                //servidor o conexión manual
                 if (servSeleccionado != 0) {
                     v.escribirTextArea("" + servSeleccionado);
                     Sala salaSelec = salas.get(servSeleccionado - 1);
                     v.escribirTextArea(salaSelec.getIp() + ": " + salaSelec.getPuerto() + ":" + salaSelec.getTema());
-
+                    //creamos conexión
                     socket = new Socket(salaSelec.getIp(), salaSelec.getPuerto());
                     datosCliente = new InputStreamReader(socket.getInputStream());
                 } else {
                     conectarManual();
                 }
             }
-
+            //Primero recibimos un saludo
             BufferedReader br = new BufferedReader(datosCliente);
             String texto = null;
+            //esperamos a recibir saludo
             texto = br.readLine();
             v.escribirTextArea(texto);//Hola cliente 
-            v.setConectado(true);
+            v.setConectado(true);//cambiamos flag en la ventana
+            //servidor espera nuestro nick
             mandarMensaje(nick);
-
+            //empieza el chat
             while (!fin) {
                 //recibiendo mensajes
                 texto = br.readLine();
 
-                if (texto.trim().equals(PracticaChat.FIN_CLIENTE)) {
+                if (texto.trim().equals(PracticaChat.FIN_CLIENTE)) {//si desconectamos el cliente
                     fin = true;
-                } else if (texto.trim().equals(PracticaChat.FIN)) {
+                } else if (texto.trim().equals(PracticaChat.FIN)) {//se desconectan todos por el servidor
                     mandarMensaje(PracticaChat.FIN);
                     v.escribirTextArea("El servidor envio desconectar");
+                    v.escribirTextArea("Cliente sin conexión, pulse salir");
                     fin = true;
-                } else {
+                } else {//si no es ninguno de los finales mostramos el mensaje
                     v.escribirTextArea(texto);
                 }
-            }
 
+            }//fin del while
+
+//fin cerramos todo
             br.close();
             out.close();
             socket.close();
@@ -124,11 +130,11 @@ public class Cliente extends Thread {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println(
-                "Cliente fin");
+        System.out.println("Cliente fin");
     }
 
     private void conectarManual() throws IOException {
+        //creamos conexión con datos del cliente
         boolean ok = false;
         do {
             try {
@@ -147,8 +153,8 @@ public class Cliente extends Thread {
     }
 
     public void mandarMensaje(String msj) {
+        //función para mandar mensajes, la llamamos desde la ventana
         if (socket != null && !socket.isClosed()) {
-
             try {
                 out = new PrintWriter(socket.getOutputStream(), true);
                 out.println(msj);
@@ -156,7 +162,6 @@ public class Cliente extends Thread {
             } catch (IOException ex) {
                 Logger.getLogger(Cliente.class
                         .getName()).log(Level.SEVERE, null, ex);
-
             }
         }
     }
@@ -171,6 +176,7 @@ public class Cliente extends Thread {
     }
 
     public void desconectarCLiente() {
+        // al salir desconectamos el cliente
         mandarMensaje(PracticaChat.FIN_CLIENTE);
     }
 

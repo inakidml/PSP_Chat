@@ -8,20 +8,15 @@ package modelo;
 import controlador.PracticaChat;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import vista.VentanaCliente;
 import vista.VentanaServidor;
 
 /**
@@ -44,12 +39,11 @@ public class Servidor extends Thread {
 
     private VentanaServidor v;
     private List<HiloServerSocket> hilosRx;
-    private Map<String, HiloServerSocket> mapHilos; // conexiones de clientes ordenadas por nick
 
     public Servidor(String tema, VentanaServidor v) {
 
         hilosRx = new ArrayList<>();
-        mapHilos = new HashMap();
+
         try {
             this.ip = InetAddress.getLocalHost();
 
@@ -64,7 +58,8 @@ public class Servidor extends Thread {
 
     @Override
     public void run() {
-        getV().escribirTextArea("Recuperando ip servidor: " + ip + ":" + puerto);
+
+        getV().escribirTextArea("Recuperando datos del servidor: " + ip.getHostAddress() + ":" + puerto);
 
         //TODO conseguir ip real y seleccionar tarjeta
 //        Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
@@ -78,9 +73,11 @@ public class Servidor extends Thread {
 //            }
 //        }
         getV().escribirTextArea("Servidor creado.");
+        //añadimos servidor a la lista de difusión
         ServidorMulticast.addServidor(this);
         getV().escribirTextArea("Servidor añadido a lista de difusión.");
         getV().escribirTextArea("Creando ServerSocket");
+
         ServerSocket sc = null;
         try {
             sc = new ServerSocket(puerto);
@@ -89,17 +86,20 @@ public class Servidor extends Thread {
         }
         getV().escribirTextArea("Esperando conexión");
         try {
-            sc.setSoTimeout(2000);
+            sc.setSoTimeout(2000);//timeout para poder acabar bien
         } catch (SocketException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         while (!fin) {
             Socket socket = null;
             try {
                 socket = sc.accept();
             } catch (IOException ex) {
+                //cada vez que pasa timeout salta exceptiom
                 //System.out.println("esperando recibir socket");
             }
+            //hemos recivido una conexión y creamos un hilo para el cliente
             if (socket != null) {
                 HiloServerSocket h = new HiloServerSocket(socket, this);
                 getHilosRx().add(h);
@@ -111,20 +111,19 @@ public class Servidor extends Thread {
 
     }
 
-    public void addNombreCliente(String s, HiloServerSocket h) {
-        getMapHilos().put(s, h);
-    }
-
     public void removeHilo(HiloServerSocket h) {
+        //el hilo de un cliente ha termiando y lo borramos de la lista
         getHilosRx().remove(h);
     }
 
     public int getPuerto() {
+        //sebusca un puerto nuevo
         if (puerto != -1) {
             return puerto;
         } else {
             puerto = -1;
             List<Sala> servidores = HiloRecibirMulticast.getServidores();
+            //busca el puerto mayor
             if (servidores != null) {
                 for (Sala servidor : servidores) {
                     if (servidor.getPuerto() > puerto) {
@@ -133,8 +132,23 @@ public class Servidor extends Thread {
                 }
                 return puerto + 1;
             } else {
-                return 8001;
+                return PracticaChat.PUERTO_SERV;//empezamos a contar desde la constante
             }
+        }
+    }
+
+    public void terminarServidor() {
+        //fin, borrar servidor de lista y desconectar clientes
+        fin = true;
+        ServidorMulticast.removeServidor(this);
+        desconectarClientes();
+
+    }
+
+    public void desconectarClientes() {
+        //desconecta todos los hilos
+        if (hilosRx.size() > 0) {
+            hilosRx.get(0).enviarMensaje(PracticaChat.FIN);
         }
     }
 
@@ -157,25 +171,5 @@ public class Servidor extends Thread {
      */
     public List<HiloServerSocket> getHilosRx() {
         return hilosRx;
-    }
-
-    /**
-     * @return the mapHilos
-     */
-    public Map<String, HiloServerSocket> getMapHilos() {
-        return mapHilos;
-    }
-
-    public void terminarServidor() {
-        fin = true;
-        ServidorMulticast.removeServidor(this);
-        desconectarClientes();
-
-    }
-
-    public void desconectarClientes() {
-        if (hilosRx.size() > 0) {
-            hilosRx.get(0).enviarMensaje(PracticaChat.FIN);
-        }
     }
 }

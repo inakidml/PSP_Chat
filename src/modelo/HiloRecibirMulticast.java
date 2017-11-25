@@ -36,22 +36,23 @@ public class HiloRecibirMulticast extends Thread {
     private static int ultimoServ;
     private static List<HiloRecibirMulticast> hilos;
     private static int contador = 0;
+    //hilo que recibe una lista de servidores por multicast
 
     public HiloRecibirMulticast() {
+//nos registramos al grupo de multicast
+        //
         hilos = new ArrayList<>();
         try {
             ms = new MulticastSocket(PracticaChat.PUERTO_DIFUSION);
-            ms.setSoTimeout(3000);
+            ms.setSoTimeout(3000);//timeout para poder hacer cierre ordenado
         } catch (IOException ex) {
             System.out.println("IOException en VPrincipal, buscando servidor difusión");;
         }
-
         try {
             grupo = InetAddress.getByName(PracticaChat.IP_DIFUSION);
         } catch (UnknownHostException ex) {
             Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         if (ms != null && grupo != null) {
             try {
                 ms.joinGroup(grupo);
@@ -63,12 +64,11 @@ public class HiloRecibirMulticast extends Thread {
 
     @Override
     public void run() {
-        
+
         String msj;
         while (!fin) {
             byte[] buf = new byte[1024];
             DatagramPacket recibido = new DatagramPacket(buf, buf.length);
-
             try {
                 ms.receive(recibido);
             } catch (SocketTimeoutException e) {
@@ -76,20 +76,17 @@ public class HiloRecibirMulticast extends Thread {
             } catch (IOException ex) {
                 System.out.println("Servidor desconectado");
             }
-
             msj = new String(recibido.getData());
-
             procesarPaquete(msj);
-            ServPresent = true;
-            buf = null;
-
+            ServPresent = true;//cambiamos variable a true para indicar que existe un servidor de difusión
+            buf = null;//limpiamos el buffer
         }
         try {
-            ms.leaveGroup(grupo);
+            ms.leaveGroup(grupo);//abanonamos el grupo
         } catch (IOException ex) {
             System.out.println("Servidor desconectado");
         }
-        ms.close();
+        ms.close();//cerramos
 
     }
 
@@ -97,6 +94,7 @@ public class HiloRecibirMulticast extends Thread {
      * @return the ServPresent
      */
     public static boolean isServPresent() {
+        //función estatica si no existe el hilo lo arranca y devuelve si hay servidorDifusión
         if (h == null) {
             arrancarHilo();
             try {
@@ -105,13 +103,10 @@ public class HiloRecibirMulticast extends Thread {
                 Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
         return ServPresent;
-
     }
 
     private static void arrancarHilo() {
-
         HiloRecibirMulticast h = new HiloRecibirMulticast();
         hilos.add(h);
         contador++;
@@ -121,16 +116,12 @@ public class HiloRecibirMulticast extends Thread {
 
     public static void terminarRxDifusion() {
         fin = true;
-//no lo uso, al final timeout de multicastsocket -> ms.setSoTimeout(3000);
-//        HiloMataHilos h = new HiloMataHilos(hilos);
-//        h.start();
     }
 
     private void procesarPaquete(String s) {
+        //convertimos el mensaje en servidor puerto y tema
         if (!s.trim().equals("")) {
             servidores = new ArrayList<>();
-            String servidor;
-            String puerto;
             String[] ss = s.split(",");//separamos los servidores
             for (String serv : ss) {
                 String[] datos = serv.split(":"); //separamos ip:puerto:tema
@@ -151,40 +142,10 @@ public class HiloRecibirMulticast extends Thread {
      * @return the servidores
      */
     public static List<Sala> getServidores() {
+        //si desde un cliente quieren los servidores y no esta arrancado este hilo lo arrancamos y devuelve serv
         if (h == null) {
             arrancarHilo();
         }
         return servidores;
     }
-}
-
-//No usado
-class HiloMataHilos extends Thread {
-
-    private static List<HiloRecibirMulticast> hilos;
-
-    public HiloMataHilos(List<HiloRecibirMulticast> hilos) {
-        this.hilos = hilos;
-        hilos = new ArrayList<>();
-    }
-
-    @Override
-    public void run() {
-        this.setName("HiloMataHilos");
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-
-        Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
-        System.out.println(threadArray.length);
-        for (Thread thread : threadArray) {
-            System.out.println(thread);
-        }
-
-        for (HiloRecibirMulticast hilo : hilos) {
-            System.out.println("Hilo a matar");
-            System.out.println(hilo);
-            hilo.interrupt();
-        }
-        System.out.println("fin " + this);
-    }
-
 }

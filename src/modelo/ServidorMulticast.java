@@ -26,29 +26,25 @@ import modelo.Servidor;
 public class ServidorMulticast extends Thread {
 
     private static List<String> servidores;
-    MulticastSocket ms;
-    InetAddress grupo;
-    DatagramPacket dp;
+    private MulticastSocket ms;
+    private InetAddress grupo;
+    private DatagramPacket dp;
     boolean fin = false;
     private int contador = 0;
 
     public ServidorMulticast() {
-
+//envia a una dirección multicast la lista de todos los servidores que se conecten
         servidores = new ArrayList<>();
         try {
+            //creamos multicast socket
             ms = new MulticastSocket();
+            //cambio TTL por pruebas en egibide
             ms.setTimeToLive(128);
 
         } catch (IOException ex) {
             System.out.println("IOException al instanciar Multicast");;
         }
         try {
-//            try {
-//                ms.setNetworkInterface(NetworkInterface.getByInetAddress(
-//                        InetAddress.getByName("0.0.0.0")));
-//            } catch (SocketException ex) {
-//                Logger.getLogger(ServidorMulticast.class.getName()).log(Level.SEVERE, null, ex);
-//            }
             grupo = InetAddress.getByName(PracticaChat.IP_DIFUSION);
         } catch (UnknownHostException ex) {
             System.out.println("Direccion multicast no válida");
@@ -57,32 +53,32 @@ public class ServidorMulticast extends Thread {
     }
 
     @Override
-    public void run() {
+    public void run() {//lo instanciamos y arrancamos desde ventanaprincipal
         contador++;
         this.setName("HiloServDifusion-" + contador);
         difusionServidores();
     }
 
     private void difusionServidores() {
-
         while (!fin) {
-            String msj = crearMensaje();
+            String msj = crearMensaje();//creamos lista de sevidores
             dp = new DatagramPacket(msj.getBytes(), msj.length(), grupo, PracticaChat.PUERTO_DIFUSION);
             try {
-                ms.send(dp);
+                ms.send(dp);//enviamos el mensaje
             } catch (IOException ex) {
                 System.out.println("IOExdception al enviar datagrama en hilo difusión");;
             }
             try {
-                sleep(2000);
+                sleep(2000);//esperamos un poco
             } catch (InterruptedException ex) {
                 System.out.println("Interrupcion con el sleep del hilo difusión");;
             }
         }
         System.out.println("fin " + this);
-    }
+    }//fin del while
 
     private String crearMensaje() {
+        //Creamos un string con todos los servidores
         String msj = "";
         for (String servidor : servidores) {
             if (!msj.equals("")) {
@@ -91,17 +87,18 @@ public class ServidorMulticast extends Thread {
                 msj = servidor;
             }
         }
-
         return msj;
     }
 
     public static void addServidor(Servidor s) {
+        //cada servidor se subscribe a la lista con esta función
         String ip = s.getIp().getHostAddress();
         String serv = ip + ":" + s.getPuerto() + ":" + s.getTema();
         servidores.add(serv);
     }
 
     public static void removeServidor(Servidor s) {
+        //al desconectarse los servidores se deben borrar
         String ip = s.getIp().getHostAddress();
         String serv = ip + ":" + s.getPuerto() + ":" + s.getTema();
         String sBorrar = null;

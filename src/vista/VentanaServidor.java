@@ -47,33 +47,7 @@ public class VentanaServidor extends javax.swing.JFrame {
     }
 
     public void rellenarJTable() {
-        MouseListener tableMouseListener;
-//        tableMouseListener = new MouseAdapter() {
 
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                int row = jTable1.rowAtPoint(e.getPoint());//get mouse-selected row
-//                int col = jTable1.columnAtPoint(e.getPoint());//get mouse-selected col
-//                TipoIncidencia tI = new TipoIncidencia();
-//                String tipo = (String) tableModel.getValueAt(row, 0);
-//                int idElegido = 0;
-//                for (TipoIncidencia tipoIncidencia : tiposIncidencias) {
-//                    if (tipo.equals(tipoIncidencia.getTipo())) {
-//                        idElegido = tipoIncidencia.getId();
-//                    }
-//                }
-//                tI.setId(idElegido);
-//                tI = tiposIncidencias.get(tiposIncidencias.indexOf(tI)); //conseguimos el objeto
-//                Incidencia inc;
-//                inc = new Incidencia(tI, j, (String) tableModel.getValueAt(row, 1));
-//                inc = listaIncidencias.get(listaIncidencias.indexOf(inc));
-//                jTextField2.setText("" + inc.getTipoIncidencia().getTipo());
-//                jTextField3.setText(inc.getFecha());
-//                jTextField4.setText(inc.getTipoIncidencia().getSancion());
-//
-//                incBorrar = inc;
-//            }
-//        };
         List<HiloServerSocket> hilosRx = null;
         if (servidor != null) {
             hilosRx = servidor.getHilosRx();
@@ -103,7 +77,6 @@ public class VentanaServidor extends javax.swing.JFrame {
                 return false;
             }
         });
-//jTable1.addMouseListener(tableMouseListener);
 
         tableModel = (DefaultTableModel) jTable1.getModel();
 
@@ -311,28 +284,30 @@ public class VentanaServidor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //botón para desconectar
         desconectarServidor();
     }//GEN-LAST:event_jButton1ActionPerformed
     public void desconectarServidor() {
+        //si el servidor ha sido creado desconecta a los clientes y termina el servidor
         if (servidor != null) {
             servidor.desconectarClientes();
             servidor.terminarServidor();
         }
     }
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        //Botón conectar
         if (!jTextField1.getText().equals("")) {
             servidor = new Servidor(jTextField1.getText(), this);
             jTextField1.setText("");
             jButton3.setEnabled(false);
             refrescarJTable();
         }
-
-
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        //botón salir
         servidor.terminarServidor();
-        this.dispose();        // TODO add your handling code here:
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

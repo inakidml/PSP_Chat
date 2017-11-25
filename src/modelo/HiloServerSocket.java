@@ -36,29 +36,30 @@ public class HiloServerSocket extends Thread {
 
     @Override
     public void run() {
-
+//hilo que se crea en Servidor con cada conexión
         try {
-            //primero saludar
+//ya tenemos un socket, creamos streams
+            InputStreamReader datosCliente = new InputStreamReader(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream(), true);
             s.getV().escribirTextArea("cliente conectado");
+            //saludamos
             enviarMensaje("Hola cliente, ya estas conectado");
-            InputStreamReader datosCliente = new InputStreamReader(socket.getInputStream());
             BufferedReader br = new BufferedReader(datosCliente);
-            //responde con el nick
+            //esperamos respuesta con el nick
             nick = br.readLine();
             s.getV().escribirTextArea("Bienvenido: " + getNick());
-            s.addNombreCliente(getNick(), this);
-            ipCliente = socket.getInetAddress();
+            ipCliente = socket.getInetAddress();//guardamos la ip
             //empieza el chat
-            s.getV().refrescarJTable();
-            String texto;
+            s.getV().refrescarJTable();//actualizamos tabla de la ventana
 
+            //empieza el chat
+            String texto;
             while (!fin) {
                 texto = br.readLine();
-
                 s.getV().escribirTextArea(getNick() + ": " + socket.getInetAddress());
                 s.getV().escribirTextArea("mensaje: " + texto);
 
+//analizmaos el mensaje
                 if (texto.trim().equals(PracticaChat.FIN)) {
                     distribuirMensaje(PracticaChat.FIN);
                     s.removeHilo(this);
@@ -71,21 +72,20 @@ public class HiloServerSocket extends Thread {
                     s.removeHilo(this);
                     s.getV().refrescarJTable();
                     fin = true;
-                } else {
+                } else {//si no recibimos fin, propagamos el mensaje
                     distribuirMensaje(getNick() + ": " + texto);
-
                 }
-            }
+            }//fin while
 
             //cerramos todo
             br.close();
             out.close();
             datosCliente.close();
             socket.close();
-            System.out.println("HiloServerSocket fin");
         } catch (IOException ex) {
             System.out.println("Perdida de conexión");
         }
+        System.out.println("HiloServerSocket fin");
     }
 
     public void enviarMensaje(String msj) {
@@ -95,6 +95,7 @@ public class HiloServerSocket extends Thread {
     }
 
     private void distribuirMensaje(String msj) {
+        //enviamos mensaje a todos los clientes del servidor
         for (HiloServerSocket hilo : s.getHilosRx()) {
             hilo.enviarMensaje(msj);
         }
@@ -113,10 +114,4 @@ public class HiloServerSocket extends Thread {
     public InetAddress getIpCliente() {
         return ipCliente;
     }
-
-    @Override
-    public String toString() {
-        return "HiloServerSocket{" + "socket=" + socket + ", nick=" + nick + ", ipCliente=" + ipCliente + '}';
-    }
-
 }
