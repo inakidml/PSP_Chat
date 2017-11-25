@@ -70,7 +70,7 @@ public class ServidorMulticast extends Thread {
             try {
                 ms.send(dp);
             } catch (IOException ex) {
-                System.out.println("IOExdception al enviar datgrama en hilo difusión");;
+                System.out.println("IOExdception al enviar datagrama en hilo difusión");;
             }
             try {
                 sleep(2000);
@@ -90,6 +90,7 @@ public class ServidorMulticast extends Thread {
                 msj = servidor;
             }
         }
+
         return msj;
     }
 
@@ -97,6 +98,20 @@ public class ServidorMulticast extends Thread {
         String ip = s.getIp().getHostAddress();
         String serv = ip + ":" + s.getPuerto() + ":" + s.getTema();
         servidores.add(serv);
+    }
+
+    public static void removeServidor(Servidor s) {
+        String ip = s.getIp().getHostAddress();
+        String serv = ip + ":" + s.getPuerto() + ":" + s.getTema();
+        String sBorrar = null;
+        for (String servidor : servidores) {
+            if (servidor.equals(serv)) {
+                sBorrar = servidor;
+            }
+        }
+        if (sBorrar != null) {
+            servidores.remove(sBorrar);
+        }
     }
 
     public void terminarServidor() {

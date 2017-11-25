@@ -170,6 +170,7 @@ public class Servidor extends Thread {
 
     public void terminarServidor() {
         fin = true;
+        ServidorMulticast.removeServidor(this);
         desconectarClientes();
 
     }

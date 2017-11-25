@@ -61,6 +61,8 @@ public class HiloServerSocket extends Thread {
 
                 if (texto.trim().equals(PracticaChat.FIN)) {
                     distribuirMensaje(PracticaChat.FIN);
+                    s.removeHilo(this);
+                    s.getV().refrescarJTable();
                     fin = true;
                     s.getV().refrescarJTable();
                 } else if (texto.trim().equals(PracticaChat.FIN_CLIENTE)) {

@@ -62,25 +62,25 @@ public class HiloRecibirMulticast extends Thread {
 
     @Override
     public void run() {
-        byte[] buf = new byte[1024];
+        
         String msj;
         while (!fin) {
+            byte[] buf = new byte[1024];
             DatagramPacket recibido = new DatagramPacket(buf, buf.length);
 
-
-                try {
-                    ms.receive(recibido);
-                } catch (SocketTimeoutException e) {
-                    System.out.println("Se ha excedido el tiempo de espera");
-                } catch (IOException ex) {
-                    System.out.println("Servidor desconectado");
+            try {
+                ms.receive(recibido);
+            } catch (SocketTimeoutException e) {
+                System.out.println("Se ha excedido el tiempo de espera");
+            } catch (IOException ex) {
+                System.out.println("Servidor desconectado");
             }
 
-                msj = new String(recibido.getData());
+            msj = new String(recibido.getData());
 
-                procesarPaquete(msj);
-                ServPresent = true;
-
+            procesarPaquete(msj);
+            ServPresent = true;
+            buf = null;
 
         }
         try {
@@ -114,7 +114,7 @@ public class HiloRecibirMulticast extends Thread {
         HiloRecibirMulticast h = new HiloRecibirMulticast();
         hilos.add(h);
         contador++;
-        h.setName("HiloRxDifusion-"+contador);
+        h.setName("HiloRxDifusion-" + contador);
         h.start();
     }
 
@@ -141,6 +141,8 @@ public class HiloRecibirMulticast extends Thread {
                     Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        } else {
+            servidores = null;
         }
     }
 
@@ -154,10 +156,6 @@ public class HiloRecibirMulticast extends Thread {
         return servidores;
     }
 }
-
-
-
-
 
 //No usado
 class HiloMataHilos extends Thread {
