@@ -7,15 +7,18 @@ package modelo;
 
 import controlador.HiloRecibirMulticast;
 import controlador.PracticaChat;
+import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import vista.VentanaCliente;
 
 /**
@@ -29,7 +32,7 @@ public class Cliente extends Thread {
     boolean fin = false;
     VentanaCliente v;
     int servSeleccionado = -1;
-
+    InputStreamReader datosCliente = null;
     Socket socket;
     PrintWriter out = null;
 
@@ -48,6 +51,7 @@ public class Cliente extends Thread {
             //TODO decidir servidor
             v.escribirTextArea("Esperando listado servidores...");
             List<Sala> salas = null;
+            int contador = 0;
             do {
                 salas = HiloRecibirMulticast.getServidores();
                 try {
@@ -55,30 +59,42 @@ public class Cliente extends Thread {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                contador++;
 
-            } while (salas == null);
-            int cont = 1;
-            for (Sala sala : salas) {
-                v.escribirTextArea(cont + ": " + sala.getTema());
-                cont++;
-            }
-            v.escribirTextArea("Seleccione la sala: ");
-            while (servSeleccionado <= 0 || servSeleccionado > salas.size()) {
+            } while (salas == null && contador < 5);
 
-                try {
-                    sleep(500);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            if (salas == null) {//no hay servidores cerca
+                v.escribirTextArea("No se ha encontrado lista de servidores, pasamos a modo manual.");
+                conectarManual();
+            } else {
+                int cont = 1;
+                v.escribirTextArea("0: Conexión manual.");
+                for (Sala sala : salas) {
+                    v.escribirTextArea(cont + ": " + sala.getTema());
+                    cont++;
                 }
+                v.escribirTextArea("Seleccione la sala: ");
+                while (servSeleccionado < 0 || servSeleccionado > salas.size()) {
 
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+                if (servSeleccionado != 0) {
+                    v.escribirTextArea("" + servSeleccionado);
+                    Sala salaSelec = salas.get(servSeleccionado - 1);
+                    v.escribirTextArea(salaSelec.getIp() + ": " + salaSelec.getPuerto() + ":" + salaSelec.getTema());
+
+                    socket = new Socket(salaSelec.getIp(), salaSelec.getPuerto());
+                    datosCliente = new InputStreamReader(socket.getInputStream());
+                } else {
+                    conectarManual();
+                }
             }
-            //TODO coenctar y escuchar mensajes, cambiar variable conectado de vcliente
-            v.escribirTextArea("" + servSeleccionado);
-            Sala salaSelec = salas.get(servSeleccionado - 1);
-            v.escribirTextArea(salaSelec.getIp() + ": " + salaSelec.getPuerto() + ":" + salaSelec.getTema());
 
-            socket = new Socket(salaSelec.getIp(), salaSelec.getPuerto());
-            InputStreamReader datosCliente = new InputStreamReader(socket.getInputStream());
             BufferedReader br = new BufferedReader(datosCliente);
             String texto = null;
             texto = br.readLine();
@@ -109,7 +125,26 @@ public class Cliente extends Thread {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println("Cliente fin");
+        System.out.println(
+                "Cliente fin");
+    }
+
+    private void conectarManual() throws IOException {
+        boolean ok = false;
+        do {
+            try {
+                String ip = JOptionPane.showInputDialog("Introduzca la dirección ip: ");
+                int puerto = Integer.parseInt(JOptionPane.showInputDialog("Introduzca el puerto: "));
+                socket = new Socket(ip, puerto);
+                ok = true;
+            } catch (HeadlessException headlessException) {
+            } catch (NumberFormatException numberFormatException) {
+                v.escribirTextArea("Formato incorrecto");
+            } catch (IOException iOException) {
+                v.escribirTextArea("Host no es valido");
+            }
+        } while (!ok);
+        datosCliente = new InputStreamReader(socket.getInputStream());
     }
 
     public void mandarMensaje(String msj) {
@@ -118,8 +153,10 @@ public class Cliente extends Thread {
             try {
                 out = new PrintWriter(socket.getOutputStream(), true);
                 out.println(msj);
+
             } catch (IOException ex) {
-                Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Cliente.class
+                        .getName()).log(Level.SEVERE, null, ex);
 
             }
         }

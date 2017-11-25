@@ -31,6 +31,7 @@ public class VentanaServidor extends javax.swing.JFrame {
      */
     public VentanaServidor() {
         initComponents();
+        rellenarJTable();
 
     }
 
@@ -72,11 +73,13 @@ public class VentanaServidor extends javax.swing.JFrame {
 //                incBorrar = inc;
 //            }
 //        };
-        List<HiloServerSocket> hilosRx = servidor.getHilosRx();
-
+        List<HiloServerSocket> hilosRx = null;
+        if (servidor != null) {
+            hilosRx = servidor.getHilosRx();
+        }
         Object[][] data = {};
-        data = new Object[hilosRx.size()][2];
         if (hilosRx != null) {
+            data = new Object[hilosRx.size()][2];
             int i = 0;
             for (HiloServerSocket hilo : hilosRx) {
                 String nick = hilo.getNick();
@@ -312,7 +315,7 @@ public class VentanaServidor extends javax.swing.JFrame {
     public void desconectarServidor() {
         if (servidor != null) {
             servidor.desconectarClientes();
-           servidor.terminarServidor();
+            servidor.terminarServidor();
         }
     }
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -320,7 +323,7 @@ public class VentanaServidor extends javax.swing.JFrame {
             servidor = new Servidor(jTextField1.getText(), this);
             jTextField1.setText("");
             jButton3.setEnabled(false);
-            rellenarJTable();
+            refrescarJTable();
         }
 
 

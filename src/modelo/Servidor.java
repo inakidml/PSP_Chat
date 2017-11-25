@@ -66,7 +66,7 @@ public class Servidor extends Thread {
 
     @Override
     public void run() {
-        getV().escribirTextArea("Recuperando ip servidor: " + ip);
+        getV().escribirTextArea("Recuperando ip servidor: " + ip + ":" + puerto);
 
         //TODO conseguir ip real y seleccionar tarjeta
 //        Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
