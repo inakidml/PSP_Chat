@@ -186,9 +186,12 @@ public class VentanaCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        c.desconectarCLiente();
+        desconectarCliente();
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+    public void desconectarCliente() {
+        c.desconectarCLiente();
+    }
 
     /**
      * @param args the command line arguments

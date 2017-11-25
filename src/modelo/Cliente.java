@@ -37,12 +37,13 @@ public class Cliente extends Thread {
         this.nick = nick;
         this.v = v;
         this.start();
+
     }
 
     @Override
     public void run() {
         try {
-
+            this.setName("HiloCLiente");
             v.escribirTextArea(String.format("Hola %s.", nick));
             //TODO decidir servidor
             v.escribirTextArea("Esperando listado servidores...");
@@ -88,13 +89,15 @@ public class Cliente extends Thread {
             while (!fin) {
                 //recibiendo mensajes
                 texto = br.readLine();
-                System.out.println(texto);
-                if (!texto.equals("FIN")) {
-                    v.escribirTextArea(texto);
-                } else {
+
+                if (texto.trim().equals(PracticaChat.FIN_CLIENTE)) {
+                    fin = true;
+                } else if (texto.trim().equals(PracticaChat.FIN)) {
                     mandarMensaje(PracticaChat.FIN);
                     v.escribirTextArea("El servidor envio desconectar");
                     fin = true;
+                } else {
+                    v.escribirTextArea(texto);
                 }
             }
 
@@ -130,8 +133,8 @@ public class Cliente extends Thread {
             System.out.println("no es un número");
         }
     }
-    
-    public void desconectarCLiente(){
+
+    public void desconectarCLiente() {
         mandarMensaje(PracticaChat.FIN_CLIENTE);
     }
 

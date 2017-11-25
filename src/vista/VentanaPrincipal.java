@@ -20,7 +20,6 @@ import controlador.ServidorMulticast;
 import java.util.Set;
 import javax.swing.JFrame;
 
-
 /**
  *
  * @author 9fdam02
@@ -212,30 +211,43 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        cerrarVentanas(vClientes);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cerrarVentanas(vServidores);
 
         if (servDifusion != null) {
 
             servDifusion.terminarServidor();
         }
+
         HiloRecibirMulticast.terminarRxDifusion();
-        cerrarVentanas(vClientes);
-        cerrarVentanas(vServidores);
+
         this.dispose();
-//        mostrarhilos();
+
         try {
-            Thread.sleep(2100);
+            Thread.sleep(5000);
         } catch (InterruptedException ex) {
             Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
+        mostrarhilos();
         //System.exit(0); //no hace falta, fin ordenado
     }//GEN-LAST:event_jButton3ActionPerformed
     private void cerrarVentanas(List<javax.swing.JFrame> l) {
+
         for (JFrame jFrame : l) {
-            System.out.println(jFrame.getClass());
-            
-            if(jFrame.getClass().equals("vista.VentanaServidor")){
-            VentanaServidor v = (VentanaServidor)jFrame;
-            v.desconectarServidor();
+            System.out.println(jFrame.getClass().getCanonicalName());
+            if (jFrame.getClass().getCanonicalName().equals("vista.VentanaServidor")) {
+                System.out.println("vista.VentanaServidor desconectando");
+                VentanaServidor v = (VentanaServidor) jFrame;
+                v.desconectarServidor();
+            } else if (jFrame.getClass().getCanonicalName().equals("vista.VentanaCliente")) {
+                System.out.println("vista.Ventana cliente desconectando");
+                VentanaCliente v = (VentanaCliente) jFrame;
+                v.desconectarCliente();
             }
             jFrame.dispose();
         }

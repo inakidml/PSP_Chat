@@ -59,13 +59,16 @@ public class HiloServerSocket extends Thread {
                 s.getV().escribirTextArea(getNick() + ": " + socket.getInetAddress());
                 s.getV().escribirTextArea("mensaje: " + texto);
 
-                if (texto.equals(PracticaChat.FIN)) {
+                if (texto.trim().equals(PracticaChat.FIN)) {
                     distribuirMensaje(PracticaChat.FIN);
                     fin = true;
                     s.getV().refrescarJTable();
-                } else if (texto.equals(PracticaChat.FIN_CLIENTE)) {
+                } else if (texto.trim().equals(PracticaChat.FIN_CLIENTE)) {
                     enviarMensaje(PracticaChat.FIN_CLIENTE);
+                    distribuirMensaje(nick + " ha abandonado el chat");
+                    s.removeHilo(this);
                     s.getV().refrescarJTable();
+                    fin = true;
                 } else {
                     distribuirMensaje(getNick() + ": " + texto);
 
@@ -77,8 +80,7 @@ public class HiloServerSocket extends Thread {
             out.close();
             datosCliente.close();
             socket.close();
-
-            System.out.println("HiloServerSocket  fin");
+            System.out.println("HiloServerSocket fin");
         } catch (IOException ex) {
             System.out.println("Perdida de conexión");
         }

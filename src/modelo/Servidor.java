@@ -100,7 +100,7 @@ public class Servidor extends Thread {
             try {
                 socket = sc.accept();
             } catch (IOException ex) {
-                System.out.println("esperando recibir socket");
+                //System.out.println("esperando recibir socket");
             }
             if (socket != null) {
                 HiloServerSocket h = new HiloServerSocket(socket, this);
@@ -110,11 +110,15 @@ public class Servidor extends Thread {
 
         }
         v.escribirTextArea("Servidor terminado");
-        
+
     }
 
     public void addNombreCliente(String s, HiloServerSocket h) {
         getMapHilos().put(s, h);
+    }
+
+    public void removeHilo(HiloServerSocket h) {
+        getHilosRx().remove(h);
     }
 
     public int getPuerto() {
@@ -167,10 +171,11 @@ public class Servidor extends Thread {
     public void terminarServidor() {
         fin = true;
         desconectarClientes();
-        
+
     }
-    public void desconectarClientes(){
-        if(hilosRx.size() >0) {
+
+    public void desconectarClientes() {
+        if (hilosRx.size() > 0) {
             hilosRx.get(0).enviarMensaje(PracticaChat.FIN);
         }
     }
