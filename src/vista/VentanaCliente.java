@@ -208,7 +208,9 @@ public class VentanaCliente extends javax.swing.JFrame {
         jTextField2.setText(jTextField2.getText() + jComboBox1.getSelectedItem());
     }//GEN-LAST:event_jComboBox1ActionPerformed
     public void desconectarCliente() {
-        c.desconectarCLiente();
+        if (c != null) {
+            c.desconectarCLiente();
+        }
     }
 
     /**

@@ -5,7 +5,6 @@
  */
 package modelo;
 
-import controlador.HiloRecibirMulticast;
 import controlador.PracticaChat;
 import java.awt.HeadlessException;
 import java.io.BufferedReader;

@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import controlador.HiloRecibirMulticast;
+import modelo.HiloRecibirMulticast;
 import modelo.Servidor;
-import controlador.ServidorMulticast;
+import modelo.ServidorMulticast;
 import java.util.Set;
 import javax.swing.JFrame;
 
