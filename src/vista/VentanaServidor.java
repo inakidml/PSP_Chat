@@ -225,6 +225,7 @@ public class VentanaServidor extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
@@ -306,9 +307,13 @@ public class VentanaServidor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        desconectarServidor();
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    public void desconectarServidor() {
+        if (servidor != null) {
+            servidor.desconectarClientes();
+        }
+    }
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (!jTextField1.getText().equals("")) {
             servidor = new Servidor(jTextField1.getText(), this);
@@ -321,6 +326,7 @@ public class VentanaServidor extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        servidor.terminarServidor();
         this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 

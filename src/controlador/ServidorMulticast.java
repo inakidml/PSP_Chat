@@ -26,10 +26,10 @@ public class ServidorMulticast extends Thread {
 
     private static List<String> servidores;
     MulticastSocket ms;
-    int puerto;
     InetAddress grupo;
     DatagramPacket dp;
     boolean fin = false;
+    private int contador = 0;
 
     public ServidorMulticast() {
 
@@ -41,7 +41,6 @@ public class ServidorMulticast extends Thread {
         } catch (IOException ex) {
             System.out.println("IOException al instanciar Multicast");;
         }
-        puerto = 50000;
         try {
 //            try {
 //                ms.setNetworkInterface(NetworkInterface.getByInetAddress(
@@ -49,15 +48,17 @@ public class ServidorMulticast extends Thread {
 //            } catch (SocketException ex) {
 //                Logger.getLogger(ServidorMulticast.class.getName()).log(Level.SEVERE, null, ex);
 //            }
-            grupo = InetAddress.getByName("224.0.1.1");
+            grupo = InetAddress.getByName(PracticaChat.IP_DIFUSION);
         } catch (UnknownHostException ex) {
-            System.out.println("Direccion multicast no válida");;
+            System.out.println("Direccion multicast no válida");
         }
 
     }
 
     @Override
     public void run() {
+        contador++;
+        this.setName("HiloServDifusion-" + contador);
         difusionServidores();
     }
 
@@ -65,7 +66,7 @@ public class ServidorMulticast extends Thread {
 
         while (!fin) {
             String msj = crearMensaje();
-            dp = new DatagramPacket(msj.getBytes(), msj.length(), grupo, puerto);
+            dp = new DatagramPacket(msj.getBytes(), msj.length(), grupo, PracticaChat.PUERTO_DIFUSION);
             try {
                 ms.send(dp);
             } catch (IOException ex) {
@@ -77,7 +78,7 @@ public class ServidorMulticast extends Thread {
                 System.out.println("Interrupcion con el sleep del hilo difusión");;
             }
         }
-
+        System.out.println("fin " + this);
     }
 
     private String crearMensaje() {

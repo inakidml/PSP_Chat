@@ -5,6 +5,7 @@
  */
 package controlador;
 
+import java.net.InetAddress;
 import vista.VentanaPrincipal;
 
 /**
@@ -13,6 +14,11 @@ import vista.VentanaPrincipal;
  */
 public class PracticaChat {
 
+    public static final String FIN = "FIN";
+    public static final String FIN_CLIENTE = "FIN CLIENTE";
+    public static final String IP_DIFUSION= "224.0.1.1"; 
+    public static final int PUERTO_DIFUSION =50000;
+    
     static VentanaPrincipal v;
 
     /**

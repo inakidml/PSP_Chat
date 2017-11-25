@@ -5,6 +5,7 @@
  */
 package modelo;
 
+import controlador.PracticaChat;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,6 +27,7 @@ public class HiloServerSocket extends Thread {
     private String nick;
     private PrintWriter out;
     private InetAddress ipCliente;
+    private boolean fin = false;
 
     public HiloServerSocket(Socket socket, Servidor s) {
         this.socket = socket;
@@ -39,7 +41,6 @@ public class HiloServerSocket extends Thread {
             //primero saludar
             out = new PrintWriter(socket.getOutputStream(), true);
             s.getV().escribirTextArea("cliente conectado");
-            boolean fin = false;
             enviarMensaje("Hola cliente, ya estas conectado");
             InputStreamReader datosCliente = new InputStreamReader(socket.getInputStream());
             BufferedReader br = new BufferedReader(datosCliente);
@@ -54,18 +55,32 @@ public class HiloServerSocket extends Thread {
 
             while (!fin) {
                 texto = br.readLine();
+
                 s.getV().escribirTextArea(getNick() + ": " + socket.getInetAddress());
                 s.getV().escribirTextArea("mensaje: " + texto);
-                distribuirMensaje(getNick() + ": " + texto);
+
+                if (texto.equals(PracticaChat.FIN)) {
+                    distribuirMensaje(PracticaChat.FIN);
+                    fin = true;
+                    s.getV().refrescarJTable();
+                } else if (texto.equals(PracticaChat.FIN_CLIENTE)) {
+                    enviarMensaje(PracticaChat.FIN_CLIENTE);
+                    s.getV().refrescarJTable();
+                } else {
+                    distribuirMensaje(getNick() + ": " + texto);
+
+                }
+
+                //cerramos todo
+                br.close();
+                out.close();
+                datosCliente.close();
+                socket.close();
             }
 
-            //cerramos todo
-            br.close();
-            out.close();
-            datosCliente.close();
-            socket.close();
+            System.out.println("HiloServerSocket  fin");
         } catch (IOException ex) {
-            System.out.println("Fallo al cerrar");
+            System.out.println("Perdida de conexión");
         }
     }
 

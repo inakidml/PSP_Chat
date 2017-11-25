@@ -17,6 +17,9 @@ import java.util.logging.Logger;
 import controlador.HiloRecibirMulticast;
 import modelo.Servidor;
 import controlador.ServidorMulticast;
+import java.util.Set;
+import javax.swing.JFrame;
+
 
 /**
  *
@@ -26,8 +29,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private VentanaCliente vc;
     private VentanaServidor vs;
-    private List<VentanaCliente> vClientes;
-    private List<VentanaServidor> vServidores;
+    private List<javax.swing.JFrame> vClientes;
+    private List<javax.swing.JFrame> vServidores;
     private Servidor s;
     ServidorMulticast servDifusion;
 
@@ -38,13 +41,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         initComponents();
         vClientes = new ArrayList<>();
         vServidores = new ArrayList<>();
-        this.setLocationRelativeTo(null);
+        //this.setLocationRelativeTo(null);
+        this.setLocationByPlatform(true);
         escribirTextArea("Buscando servidor de difusion");
         if (!HiloRecibirMulticast.isServPresent()) {
             escribirTextArea("No enconrado");
             escribirTextArea("Arrancando servidor difusión");
             servDifusion = new ServidorMulticast();
             servDifusion.start();
+
         } else {
             escribirTextArea("Encontrado servidor de difusión");
             jButton1.setEnabled(false);
@@ -207,11 +212,43 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
         if (servDifusion != null) {
+
             servDifusion.terminarServidor();
         }
+        HiloRecibirMulticast.terminarRxDifusion();
+        cerrarVentanas(vClientes);
+        cerrarVentanas(vServidores);
         this.dispose();
+//        mostrarhilos();
+        try {
+            Thread.sleep(2100);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //System.exit(0); //no hace falta, fin ordenado
     }//GEN-LAST:event_jButton3ActionPerformed
+    private void cerrarVentanas(List<javax.swing.JFrame> l) {
+        for (JFrame jFrame : l) {
+            System.out.println(jFrame.getClass());
+            
+            if(jFrame.getClass().equals("vista.VentanaServidor")){
+            VentanaServidor v = (VentanaServidor)jFrame;
+            v.desconectarServidor();
+            }
+            jFrame.dispose();
+        }
+    }
+
+    private void mostrarhilos() {
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+        System.out.println(threadArray.length);
+        for (Thread thread : threadArray) {
+            System.out.println(thread);
+        }
+    }
 
     /**
      * @param args the command line arguments

@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Servidor;
@@ -31,17 +33,20 @@ public class HiloRecibirMulticast extends Thread {
     private static boolean fin = false;
     private static List<Sala> servidores;
     private static int ultimoServ;
+    private static List<HiloRecibirMulticast> hilos;
+    private static int contador = 0;
 
     public HiloRecibirMulticast() {
-
+        hilos = new ArrayList<>();
         try {
-            ms = new MulticastSocket(50000);
+            ms = new MulticastSocket(PracticaChat.PUERTO_DIFUSION);
+            ms.setSoTimeout(3000);
         } catch (IOException ex) {
             System.out.println("IOException en VPrincipal, buscando servidor difusión");;
         }
 
         try {
-            grupo = InetAddress.getByName("224.0.1.1");
+            grupo = InetAddress.getByName(PracticaChat.IP_DIFUSION);
         } catch (UnknownHostException ex) {
             Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -62,22 +67,26 @@ public class HiloRecibirMulticast extends Thread {
         while (!fin) {
             DatagramPacket recibido = new DatagramPacket(buf, buf.length);
 
-            try {
-                ms.receive(recibido);
+
+                try {
+                    ms.receive(recibido);
+                } catch (SocketTimeoutException e) {
+                    System.out.println("Se ha excedido el tiempo de espera");
+                } catch (IOException ex) {
+                    System.out.println("Servidor desconectado");
+            }
 
                 msj = new String(recibido.getData());
 
                 procesarPaquete(msj);
                 ServPresent = true;
-            } catch (IOException ex) {
-                Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);
-            }
+
 
         }
         try {
             ms.leaveGroup(grupo);
         } catch (IOException ex) {
-            Logger.getLogger(HiloRecibirMulticast.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Servidor desconectado");
         }
         ms.close();
 
@@ -103,24 +112,29 @@ public class HiloRecibirMulticast extends Thread {
     private static void arrancarHilo() {
 
         HiloRecibirMulticast h = new HiloRecibirMulticast();
+        hilos.add(h);
+        contador++;
+        h.setName("HiloRxDifusion-"+contador);
         h.start();
-
     }
 
-    public static void terminarServ() {
+    public static void terminarRxDifusion() {
         fin = true;
+//no lo uso, al final timeout de multicastsocket -> ms.setSoTimeout(3000);
+//        HiloMataHilos h = new HiloMataHilos(hilos);
+//        h.start();
     }
 
     private void procesarPaquete(String s) {
         if (!s.trim().equals("")) {
-        servidores = new ArrayList<>();
+            servidores = new ArrayList<>();
             String servidor;
             String puerto;
             String[] ss = s.split(",");//separamos los servidores
             for (String serv : ss) {
                 String[] datos = serv.split(":"); //separamos ip:puerto:tema
                 try {
-                    ultimoServ ++;
+                    ultimoServ++;
                     Sala sala = new Sala(ultimoServ, InetAddress.getByName(datos[0]), Integer.parseInt(datos[1]), datos[2]);
                     servidores.add(sala);
                 } catch (UnknownHostException ex) {
@@ -139,4 +153,34 @@ public class HiloRecibirMulticast extends Thread {
         }
         return servidores;
     }
+}
+//No usado
+class HiloMataHilos extends Thread {
+
+    private static List<HiloRecibirMulticast> hilos;
+
+    public HiloMataHilos(List<HiloRecibirMulticast> hilos) {
+        this.hilos = hilos;
+        hilos = new ArrayList<>();
+    }
+
+    @Override
+    public void run() {
+        this.setName("HiloMataHilos");
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+
+        Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+        System.out.println(threadArray.length);
+        for (Thread thread : threadArray) {
+            System.out.println(thread);
+        }
+
+        for (HiloRecibirMulticast hilo : hilos) {
+            System.out.println("Hilo a matar");
+            System.out.println(hilo);
+            hilo.interrupt();
+        }
+        System.out.println("fin " + this);
+    }
+
 }

@@ -6,6 +6,7 @@
 package modelo;
 
 import controlador.HiloRecibirMulticast;
+import controlador.PracticaChat;
 import controlador.ServidorMulticast;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -13,6 +14,7 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -77,7 +79,6 @@ public class Servidor extends Thread {
 //                v.escribirTextArea("  " + addr.getHostAddress());
 //            }
 //        }
-
         getV().escribirTextArea("Servidor creado.");
         ServidorMulticast.addServidor(this);
         getV().escribirTextArea("Servidor añadido a lista de difusión.");
@@ -89,18 +90,29 @@ public class Servidor extends Thread {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
         getV().escribirTextArea("Esperando conexión");
+        try {
+            sc.setSoTimeout(2000);
+        } catch (SocketException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
         while (!fin) {
             Socket socket = null;
             try {
                 socket = sc.accept();
             } catch (IOException ex) {
-                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("esperando recibir socket");
             }
-            HiloServerSocket h = new HiloServerSocket(socket, this);
-            getHilosRx().add(h);
-            h.start();
+            if (socket != null) {
+                HiloServerSocket h = new HiloServerSocket(socket, this);
+                getHilosRx().add(h);
+                h.start();
+            }
+
         }
+        v.escribirTextArea("Servidor terminado");
+        
     }
+
     public void addNombreCliente(String s, HiloServerSocket h) {
         getMapHilos().put(s, h);
     }
@@ -152,4 +164,14 @@ public class Servidor extends Thread {
         return mapHilos;
     }
 
+    public void terminarServidor() {
+        fin = true;
+        desconectarClientes();
+        
+    }
+    public void desconectarClientes(){
+        if(hilosRx.size() >0) {
+            hilosRx.get(0).enviarMensaje(PracticaChat.FIN);
+        }
+    }
 }

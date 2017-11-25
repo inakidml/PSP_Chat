@@ -6,6 +6,7 @@
 package modelo;
 
 import controlador.HiloRecibirMulticast;
+import controlador.PracticaChat;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -84,26 +85,32 @@ public class Cliente extends Thread {
             v.setConectado(true);
             mandarMensaje(nick);
 
-            boolean fin = false;
-
             while (!fin) {
                 //recibiendo mensajes
                 texto = br.readLine();
-                v.escribirTextArea(texto);
+                System.out.println(texto);
+                if (!texto.equals("FIN")) {
+                    v.escribirTextArea(texto);
+                } else {
+                    mandarMensaje(PracticaChat.FIN);
+                    v.escribirTextArea("El servidor envio desconectar");
+                    fin = true;
+                }
             }
 
             br.close();
             out.close();
             socket.close();
-            //////////////////////////////////
 
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        System.out.println("Cliente fin");
     }
 
     public void mandarMensaje(String msj) {
-        if (socket != null) {
+        if (socket != null && !socket.isClosed()) {
 
             try {
                 out = new PrintWriter(socket.getOutputStream(), true);
@@ -123,4 +130,9 @@ public class Cliente extends Thread {
             System.out.println("no es un número");
         }
     }
+    
+    public void desconectarCLiente(){
+        mandarMensaje(PracticaChat.FIN_CLIENTE);
+    }
+
 }
