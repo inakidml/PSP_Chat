@@ -70,13 +70,13 @@ public class HiloServerSocket extends Thread {
                     distribuirMensaje(getNick() + ": " + texto);
 
                 }
-
-                //cerramos todo
-                br.close();
-                out.close();
-                datosCliente.close();
-                socket.close();
             }
+
+            //cerramos todo
+            br.close();
+            out.close();
+            datosCliente.close();
+            socket.close();
 
             System.out.println("HiloServerSocket  fin");
         } catch (IOException ex) {
