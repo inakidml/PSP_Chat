@@ -66,7 +66,7 @@ public class Servidor extends Thread {
     public void run() {
         getV().escribirTextArea("Recuperando ip servidor: " + ip);
 
-        //TODO conseguir ip real 
+        //TODO conseguir ip real y seleccionar tarjeta
 //        Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
 //        for (; n.hasMoreElements();) {
 //            NetworkInterface e = n.nextElement();
@@ -77,6 +77,7 @@ public class Servidor extends Thread {
 //                v.escribirTextArea("  " + addr.getHostAddress());
 //            }
 //        }
+
         getV().escribirTextArea("Servidor creado.");
         ServidorMulticast.addServidor(this);
         getV().escribirTextArea("Servidor añadido a lista de difusión.");

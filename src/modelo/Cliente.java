@@ -116,7 +116,11 @@ public class Cliente extends Thread {
     }
 
     public void seleccionarSala(String s) {//se llama desde la ventana, para seleccionar la sala
-        int num = Integer.parseInt(s);
-        servSeleccionado = num;
+        try {
+            int num = Integer.parseInt(s);
+            servSeleccionado = num;
+        } catch (NumberFormatException ex) {
+            System.out.println("no es un número");
+        }
     }
 }

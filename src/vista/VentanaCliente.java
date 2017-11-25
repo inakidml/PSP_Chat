@@ -179,8 +179,7 @@ public class VentanaCliente extends javax.swing.JFrame {
         if (isConectado()) {
             c.mandarMensaje(jTextField2.getText());
             jTextField2.setText("");
-        } else {
-
+        } else if (jTextField2.getText() != "") {
             c.seleccionarSala(jTextField2.getText());
             jTextField2.setText("");
         }
