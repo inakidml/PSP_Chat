@@ -35,6 +35,7 @@ public class VentanaCliente extends javax.swing.JFrame {
      */
     public VentanaCliente() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     public void escribirTextArea(String s) {
@@ -66,6 +67,7 @@ public class VentanaCliente extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -120,6 +122,13 @@ public class VentanaCliente extends javax.swing.JFrame {
             }
         });
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "🤩", "🤩", "🤫", "🚲", "🍺" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -139,7 +148,9 @@ public class VentanaCliente extends javax.swing.JFrame {
                         .addComponent(jButton3))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextField2)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -159,7 +170,8 @@ public class VentanaCliente extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -180,8 +192,10 @@ public class VentanaCliente extends javax.swing.JFrame {
             c.mandarMensaje(jTextField2.getText());
             jTextField2.setText("");
         } else if (jTextField2.getText() != "") {
-            c.seleccionarSala(jTextField2.getText());
-            jTextField2.setText("");
+            if (c != null) {
+                c.seleccionarSala(jTextField2.getText());
+                jTextField2.setText("");
+            }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -189,6 +203,10 @@ public class VentanaCliente extends javax.swing.JFrame {
         desconectarCliente();
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        jTextField2.setText(jTextField2.getText() + jComboBox1.getSelectedItem());
+    }//GEN-LAST:event_jComboBox1ActionPerformed
     public void desconectarCliente() {
         c.desconectarCLiente();
     }
@@ -232,6 +250,7 @@ public class VentanaCliente extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

@@ -40,8 +40,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         initComponents();
         vClientes = new ArrayList<>();
         vServidores = new ArrayList<>();
-        //this.setLocationRelativeTo(null);
-        this.setLocationByPlatform(true);
+        this.setLocationRelativeTo(null);
+
         escribirTextArea("Buscando servidor de difusion");
         if (!HiloRecibirMulticast.isServPresent()) {
             escribirTextArea("No enconrado");

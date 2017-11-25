@@ -31,6 +31,7 @@ public class VentanaServidor extends javax.swing.JFrame {
      */
     public VentanaServidor() {
         initComponents();
+        this.setLocationRelativeTo(null);
         rellenarJTable();
 
     }
