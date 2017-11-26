@@ -20,19 +20,19 @@ import java.nio.charset.StandardCharsets;
  * @author 9fdam02
  */
 public class HiloServerSocket extends Thread {
-
+    
     private Socket socket;
     private Servidor s;
     private String nick;
     private PrintWriter out;
     private InetAddress ipCliente;
     private boolean fin = false;
-
+    
     public HiloServerSocket(Socket socket, Servidor s) {
         this.socket = socket;
         this.s = s;
     }
-
+    
     @Override
     public void run() {
 //hilo que se crea en Servidor con cada conexión
@@ -42,11 +42,14 @@ public class HiloServerSocket extends Thread {
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
             s.getV().escribirTextArea("cliente conectado");
             //saludamos
-            enviarMensaje("Hola cliente, ya estas conectado");
+            enviarMensaje("Servidor: Ya estas conectado.");
             BufferedReader br = new BufferedReader(datosCliente);
             //esperamos respuesta con el nick
-            nick = br.readLine();
-            s.getV().escribirTextArea("Bienvenido: " + getNick());
+            String provNick = br.readLine();
+            
+            nick = comprobarNick(provNick);
+            enviarMensaje("Servidor: Su nick será " + nick);
+            s.getV().escribirTextArea(getNick() + " se ha incorporado al chat");
             ipCliente = socket.getInetAddress();//guardamos la ip
             //empieza el chat
             s.getV().refrescarJTable();//actualizamos tabla de la ventana
@@ -58,15 +61,17 @@ public class HiloServerSocket extends Thread {
                 s.getV().escribirTextArea(getNick() + ": " + socket.getInetAddress());
                 s.getV().escribirTextArea("mensaje: " + texto);
 
-            //analizmaos el mensaje
+                //analizmaos el mensaje
                 if (texto.trim().equals(PracticaChat.FIN)) {
                     distribuirMensaje(PracticaChat.FIN);
                     s.removeHilo(this);
                     s.getV().refrescarJTable();
                     fin = true;
                     s.getV().refrescarJTable();
+                    s.getV().escribirTextArea(nick + " ha sido desconectado del chat");
                 } else if (texto.trim().equals(PracticaChat.FIN_CLIENTE)) {
                     enviarMensaje(PracticaChat.FIN_CLIENTE);
+                    s.getV().escribirTextArea(nick + " ha abndonado el chat");
                     distribuirMensaje(nick + " ha abandonado el chat");
                     s.removeHilo(this);
                     s.getV().refrescarJTable();
@@ -86,18 +91,33 @@ public class HiloServerSocket extends Thread {
         }
         System.out.println("HiloServerSocket fin");
     }
-
+    
     public void enviarMensaje(String msj) {
         if (socket != null) {
             out.println(msj);
         }
     }
-
+    
     private void distribuirMensaje(String msj) {
         //enviamos mensaje a todos los clientes del servidor
         for (HiloServerSocket hilo : s.getHilosRx()) {
             hilo.enviarMensaje(msj);
         }
+    }
+    
+    private String comprobarNick(String nick) {
+        boolean existe = false;
+        for (HiloServerSocket hilo : s.getHilosRx()) {
+            if (nick.equals(hilo.getNick())) {
+                nick += "_" + nick;
+            }
+        }
+        if (existe) {
+            return comprobarNick(nick);
+        } else {
+            return nick;
+        }
+        
     }
 
     /**
