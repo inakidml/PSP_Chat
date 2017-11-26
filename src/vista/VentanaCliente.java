@@ -6,6 +6,7 @@
 package vista;
 
 import java.awt.Font;
+import javax.swing.text.DefaultCaret;
 import modelo.Cliente;
 
 /**
@@ -37,6 +38,10 @@ public class VentanaCliente extends javax.swing.JFrame {
         jComboBox1.setFont(new Font("Symbola", Font.PLAIN, 16));
         jTextField2.setFont(new Font("Symbola", Font.PLAIN, 16));
         jTextArea1.setFont(new Font("Symbola", Font.PLAIN, 16));
+
+        //para que jtextarea haga autoscroll
+        DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
     }
 

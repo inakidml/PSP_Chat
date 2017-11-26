@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultCaret;
 import modelo.HiloServerSocket;
 import modelo.Servidor;
 
@@ -30,6 +31,10 @@ public class VentanaServidor extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         rellenarJTable();
         jTextArea1.setFont(new Font("Symbola", Font.PLAIN, 16));
+
+        //para que jtextarea haga autoscroll
+        DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
     }
 

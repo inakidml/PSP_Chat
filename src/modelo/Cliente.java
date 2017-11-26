@@ -89,11 +89,15 @@ public class Cliente extends Thread {
                     v.escribirTextArea(salaSelec.getIp() + ": " + salaSelec.getPuerto() + ":" + salaSelec.getTema());
                     //creamos conexión
                     socket = new Socket(salaSelec.getIp(), salaSelec.getPuerto());
-                    datosCliente = new InputStreamReader(socket.getInputStream());
+                    //StandardCharsets.UTF_8 para que funcionen emoticonos en windows
+                    datosCliente = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
                 } else {
                     conectarManual();
                 }
             }
+            //StandardCharsets.UTF_8 para que funcionen emoticonos en windows
+            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+
             //Primero recibimos un saludo
             BufferedReader br = new BufferedReader(datosCliente);
             String texto = null;
@@ -149,20 +153,14 @@ public class Cliente extends Thread {
                 v.escribirTextArea("Host no es valido");
             }
         } while (!ok);
-        datosCliente = new InputStreamReader(socket.getInputStream());
+        //StandardCharsets.UTF_8 para que funcionen emoticonos en windows
+        datosCliente = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
     }
 
     public void mandarMensaje(String msj) {
         //función para mandar mensajes, la llamamos desde la ventana
         if (socket != null && !socket.isClosed()) {
-            try {
-                out = new PrintWriter(socket.getOutputStream(), true);
-                out.println(msj);
-
-            } catch (IOException ex) {
-                Logger.getLogger(Cliente.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
+            out.println(msj);
         }
     }
 

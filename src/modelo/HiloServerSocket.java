@@ -9,12 +9,11 @@ import controlador.PracticaChat;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import modelo.Servidor;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
@@ -39,8 +38,8 @@ public class HiloServerSocket extends Thread {
 //hilo que se crea en Servidor con cada conexión
         try {
 //ya tenemos un socket, creamos streams
-            InputStreamReader datosCliente = new InputStreamReader(socket.getInputStream());
-            out = new PrintWriter(socket.getOutputStream(), true);
+            InputStreamReader datosCliente = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
+            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
             s.getV().escribirTextArea("cliente conectado");
             //saludamos
             enviarMensaje("Hola cliente, ya estas conectado");
@@ -59,7 +58,7 @@ public class HiloServerSocket extends Thread {
                 s.getV().escribirTextArea(getNick() + ": " + socket.getInetAddress());
                 s.getV().escribirTextArea("mensaje: " + texto);
 
-//analizmaos el mensaje
+            //analizmaos el mensaje
                 if (texto.trim().equals(PracticaChat.FIN)) {
                     distribuirMensaje(PracticaChat.FIN);
                     s.removeHilo(this);

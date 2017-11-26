@@ -14,6 +14,7 @@ import modelo.Servidor;
 import modelo.ServidorMulticast;
 import java.util.Set;
 import javax.swing.JFrame;
+import javax.swing.text.DefaultCaret;
 
 /**
  *
@@ -53,6 +54,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             jButton1.setEnabled(false);
 
         }
+
+        //para que jtextarea haga autoscroll
+        DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     /**

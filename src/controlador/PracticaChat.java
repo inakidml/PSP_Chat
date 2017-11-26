@@ -10,6 +10,7 @@ import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import vista.VentanaPrincipal;
 
 /**
@@ -46,6 +47,7 @@ public class PracticaChat {
         } catch (IOException | FontFormatException e) {
             System.out.println("Archivo no encontrado");
         }
+         System.out.println(Charset.defaultCharset().name());
     }
 
 }
