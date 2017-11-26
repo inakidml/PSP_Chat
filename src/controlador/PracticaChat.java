@@ -41,7 +41,7 @@ public class PracticaChat {
         try {
             GraphicsEnvironment ge
                     = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("src/fuentes/Symbola.ttf")));
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("src\\fuentes\\Symbola.ttf")));
         } catch (IOException | FontFormatException e) {
             System.out.println("Archivo no encontrado");
         }
