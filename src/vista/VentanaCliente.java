@@ -5,6 +5,8 @@
  */
 package vista;
 
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +28,7 @@ public class VentanaCliente extends javax.swing.JFrame {
     public VentanaCliente() {
         initComponents();
         this.setLocationRelativeTo(null);
-        
+
         //emojis en el combobox
         //https://stackoverflow.com/questions/26231263/create-string-with-emoji-unicode-flag-countries
         int[] emojis = {0x1F929, 0x1F9DF, 0x1F382, 0x1F6B2, 0x1F60D, 0x1F60E, 0x1F595};
@@ -35,7 +37,16 @@ public class VentanaCliente extends javax.swing.JFrame {
             String s = new String(codepoints, 0, codepoints.length);
             jComboBox1.addItem(s);
         }
+        jComboBox1.setFont(new Font("Symbola", Font.PLAIN, 15));
         jTextField2.setText("");
+        jTextField2.setFont(new Font("Symbola", Font.PLAIN, 15));
+
+        String fonts[]
+                = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+
+        for (int i = 0; i < fonts.length; i++) {
+            escribirTextArea(fonts[i]);
+        }
 
     }
 
