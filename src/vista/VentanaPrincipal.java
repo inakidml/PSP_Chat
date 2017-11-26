@@ -5,11 +5,6 @@
  */
 package vista;
 
-import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -146,6 +141,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
+
+        jScrollPane1.setAutoscrolls(true);
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);

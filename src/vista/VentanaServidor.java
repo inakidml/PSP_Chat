@@ -5,12 +5,8 @@
  */
 package vista;
 
-import modelo.HiloRecibirMulticast;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.Font;
 import java.util.List;
-import java.util.Map;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -33,6 +29,7 @@ public class VentanaServidor extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         rellenarJTable();
+        jTextArea1.setFont(new Font("Symbola", Font.PLAIN, 16));
 
     }
 
@@ -202,6 +199,8 @@ public class VentanaServidor extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        jScrollPane2.setAutoscrolls(true);
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);

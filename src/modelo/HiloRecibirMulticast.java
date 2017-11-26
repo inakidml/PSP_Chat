@@ -6,7 +6,6 @@
 package modelo;
 
 import controlador.PracticaChat;
-import modelo.Sala;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -15,10 +14,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modelo.Servidor;
 import vista.VentanaPrincipal;
 
 /**

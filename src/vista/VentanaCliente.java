@@ -6,11 +6,6 @@
 package vista;
 
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JComboBox;
 import modelo.Cliente;
 
 /**
@@ -37,16 +32,11 @@ public class VentanaCliente extends javax.swing.JFrame {
             String s = new String(codepoints, 0, codepoints.length);
             jComboBox1.addItem(s);
         }
-        jComboBox1.setFont(new Font("Symbola", Font.PLAIN, 15));
-        jTextField2.setText("");
-        jTextField2.setFont(new Font("Symbola", Font.PLAIN, 15));
-
-        String fonts[]
-                = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-        for (int i = 0; i < fonts.length; i++) {
-            escribirTextArea(fonts[i]);
-        }
+        jTextField2.setText("");//Limpio el textfield
+        //cambio fuentes para emojis        
+        jComboBox1.setFont(new Font("Symbola", Font.PLAIN, 16));
+        jTextField2.setFont(new Font("Symbola", Font.PLAIN, 16));
+        jTextArea1.setFont(new Font("Symbola", Font.PLAIN, 16));
 
     }
 
@@ -116,15 +106,17 @@ public class VentanaCliente extends javax.swing.JFrame {
             }
         });
 
+        jScrollPane1.setAutoscrolls(true);
+        jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Symbola", 0, 15)); // NOI18N
+        jTextArea1.setFont(new java.awt.Font("Symbola", 0, 16)); // NOI18N
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jTextField2.setFont(new java.awt.Font("Symbola", 0, 15)); // NOI18N
+        jTextField2.setFont(new java.awt.Font("Symbola", 0, 16)); // NOI18N
 
-        jButton2.setFont(new java.awt.Font("Symbola", 0, 15)); // NOI18N
         jButton2.setText("Enviar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,7 +131,7 @@ public class VentanaCliente extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setFont(new java.awt.Font("Symbola", 0, 15)); // NOI18N
+        jComboBox1.setFont(new java.awt.Font("Symbola", 0, 16)); // NOI18N
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -183,7 +175,7 @@ public class VentanaCliente extends javax.swing.JFrame {
                     .addComponent(jButton1)
                     .addComponent(jButton3))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

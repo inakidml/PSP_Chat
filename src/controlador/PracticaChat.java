@@ -8,9 +8,8 @@ package controlador;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
-import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.io.InputStream;
 import vista.VentanaPrincipal;
 
 /**
@@ -37,11 +36,13 @@ public class PracticaChat {
             v = new VentanaPrincipal();
             v.setVisible(true);
         }
-//Cargamos fuente para emojis
+
+        //Cargamos fuente para emojis
         try {
             GraphicsEnvironment ge
                     = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("src\\fuentes\\Symbola.ttf")));
+            InputStream is = PracticaChat.class.getClassLoader().getResourceAsStream("Symbola.ttf");//lo cargamos como stream ya que va a estar dentro del jar
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, is));
         } catch (IOException | FontFormatException e) {
             System.out.println("Archivo no encontrado");
         }
