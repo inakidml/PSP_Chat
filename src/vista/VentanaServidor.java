@@ -22,7 +22,7 @@ import modelo.Servidor;
  * @author 9fdam02
  */
 public class VentanaServidor extends javax.swing.JFrame {
-
+    
     private Servidor servidor;
     private DefaultTableModel tableModel;
 
@@ -33,9 +33,9 @@ public class VentanaServidor extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         rellenarJTable();
-
+        
     }
-
+    
     public void escribirTextArea(String s) {
         String cadena = jTextArea1.getText();
         if (!cadena.equals("")) {
@@ -45,9 +45,9 @@ public class VentanaServidor extends javax.swing.JFrame {
         }
         jTextArea1.setText(cadena);
     }
-
+    
     public void rellenarJTable() {
-
+        
         List<HiloServerSocket> hilosRx = null;
         if (servidor != null) {
             hilosRx = servidor.getHilosRx();
@@ -63,34 +63,35 @@ public class VentanaServidor extends javax.swing.JFrame {
                 data[i][1] = ip;
                 i++;
             }
-
+            
         }
         String[] colName = {"Nick", "ip"};
-
+        
         jTable1 = new javax.swing.JTable();
-
+        
         jTable1.setModel(new javax.swing.table.DefaultTableModel(data, colName) {
-
+            
             @Override
             public boolean isCellEditable(int row, int column) {
                 //all cells false
                 return false;
             }
         });
-
+        
         tableModel = (DefaultTableModel) jTable1.getModel();
-
+        
         jScrollPane1.setViewportView(jTable1);
-
+        
         jTable1 = new JTable(data, colName);
         jScrollPane1 = new JScrollPane(jTable1);
-
+        
     }
-
+    
     public void refrescarJTable() {
         tableModel.setRowCount(0);
-
+        
         List<HiloServerSocket> hilosRx = servidor.getHilosRx();
+        jLabel3.setText("" + hilosRx.size());
         Object[] data = {};
         data = new Object[2];
         if (hilosRx != null) {
@@ -324,21 +325,21 @@ public class VentanaServidor extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-
+                    
                 }
             }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(VentanaServidor.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(VentanaServidor.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(VentanaServidor.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(VentanaServidor.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);

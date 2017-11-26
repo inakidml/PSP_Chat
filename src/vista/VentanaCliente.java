@@ -5,6 +5,10 @@
  */
 package vista;
 
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import modelo.Cliente;
 
 /**
@@ -22,6 +26,17 @@ public class VentanaCliente extends javax.swing.JFrame {
     public VentanaCliente() {
         initComponents();
         this.setLocationRelativeTo(null);
+        
+        //emojis en el combobox
+        //https://stackoverflow.com/questions/26231263/create-string-with-emoji-unicode-flag-countries
+        int[] emojis = {0x1F929, 0x1F9DF, 0x1F382, 0x1F6B2, 0x1F60D, 0x1F60E, 0x1F595};
+        for (int emoji : emojis) {
+            int[] codepoints = {emoji};
+            String s = new String(codepoints, 0, codepoints.length);
+            jComboBox1.addItem(s);
+        }
+        jTextField2.setText("");
+
     }
 
     public void escribirTextArea(String s) {
@@ -90,6 +105,7 @@ public class VentanaCliente extends javax.swing.JFrame {
             }
         });
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
@@ -108,7 +124,6 @@ public class VentanaCliente extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "🤩", "🤩", "🤫", "🚲", "🍺" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
