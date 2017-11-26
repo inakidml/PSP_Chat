@@ -106,15 +106,16 @@ public class HiloServerSocket extends Thread {
     }
     
     private String comprobarNick(String nick) {
+        // recursiva para buscar nicks existentes 
         boolean existe = false;
         for (HiloServerSocket hilo : s.getHilosRx()) {
             if (nick.equals(hilo.getNick())) {
                 nick += "_" + nick;
             }
         }
-        if (existe) {
+        if (existe) {//si existe lo cambiamos y vlvemos a llamar a la funci'on
             return comprobarNick(nick);
-        } else {
+        } else {//si no existe devolvemos el nombre
             return nick;
         }
         
