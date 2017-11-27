@@ -47,6 +47,8 @@ public class PracticaChat {
         } catch (IOException | FontFormatException e) {
             System.out.println("Archivo no encontrado");
         }
+      
+        //Charset del sistema  windows no utf 8 
          System.out.println(Charset.defaultCharset().name());
     }
 
