@@ -6,6 +6,8 @@
 package vista;
 
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -36,6 +38,15 @@ public class VentanaServidor extends javax.swing.JFrame {
         DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
+        jTextField1.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    conectar();
+                    {
+                    }
+                }
+            }
+        });
     }
 
     public void escribirTextArea(String s) {
@@ -300,6 +311,9 @@ public class VentanaServidor extends javax.swing.JFrame {
         }
     }
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        conectar();
+    }//GEN-LAST:event_jButton3ActionPerformed
+    private void conectar() {
         //Botón conectar
         if (!jTextField1.getText().equals("")) {
             servidor = new Servidor(jTextField1.getText(), this);
@@ -307,8 +321,7 @@ public class VentanaServidor extends javax.swing.JFrame {
             jButton3.setEnabled(false);
             refrescarJTable();
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
-
+    }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         //botón salir
         if (servidor != null) {

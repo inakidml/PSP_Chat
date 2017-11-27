@@ -6,6 +6,8 @@
 package vista;
 
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.text.DefaultCaret;
 import modelo.Cliente;
 
@@ -42,6 +44,24 @@ public class VentanaCliente extends javax.swing.JFrame {
         //para que jtextarea haga autoscroll
         DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
+        jTextField2.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    mandarMensaje();
+                }
+            }
+
+        });
+        jTextField1.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    conectar();
+                    {
+                    }
+                }
+            }
+        });
 
     }
 
@@ -193,16 +213,21 @@ public class VentanaCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        conectar();
+    }//GEN-LAST:event_jButton1ActionPerformed
+    private void conectar() {
         //botón conectar, instanciamos un cliente
         if (!jTextField1.getText().equals("") && c == null) {
             c = new Cliente(jTextField1.getText(), this);
             jTextField1.setText("");
             jButton1.setEnabled(false);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
+    }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-//Botón enviar mensaje si esta conectado y elegir sala si no.
+        mandarMensaje();
+    }//GEN-LAST:event_jButton2ActionPerformed
+    private void mandarMensaje() {
+        //Botón enviar mensaje si esta conectado y elegir sala si no.
         if (isConectado()) {//si esta conectado enviamos mensaje
             c.mandarMensaje(jTextField2.getText());
             jTextField2.setText("");
@@ -212,8 +237,7 @@ public class VentanaCliente extends javax.swing.JFrame {
                 jTextField2.setText("");
             }
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
+    }
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         //Botón salir
         desconectarCliente();
